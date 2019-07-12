@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>紧急联系人</title>
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="email=no">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <link href="/res/style/simpleui.min.css" rel="stylesheet" type="text/css">
+    <link href="/res/style/my/contacts.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+    <div class="contact-add">
+        <div class="box">
+            <div class="frm">
+                <div class="item">
+                    <label for="username">姓名</label>
+                    <input type="text" name="username" id="username" placeholder="请输入姓名">
+                </div>
+                <div class="item">
+                    <label for="phone">手机号</label>
+                    <input type="tel" maxlength="11" name="phone" id="phone" placeholder="请输入手机号">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="btn-group">
+        <button class="primary">确定</button>
+    </div>
+    
+	<script type="text/javascript" src="/js/commonJs.js"></script>
+	
+	<script>
+    $(function() {
+		$('button').on('click', function() {
+			data = [];
+			data[0] = $("#username").val();
+			data[1] = $("#phone").val();
+			
+			// 判断姓名是否为空
+			if (data[0].length <= 0) {
+				$('input')[0].focus();
+				$.toast('请输入姓名。');
+				return;
+			}
+			
+			// 匹配姓名长度
+			if (!(/^\S{0,10}$/.test(data[0]))) {
+				$.toast('姓名格式有误，请重新输入。');
+				$('input')[0].focus();
+				return;
+			}
+			
+			// 判断手机号码是否为空
+			if (data[1].length <= 0) {
+				$.toast('请输入手机号码。');
+				$('input')[1].focus();
+				return;
+			}
+			
+			// 判断手机号码正确性
+			if (!(/^1[3456789]\d{9}$/.test(data[1]))) {
+				$.toast('请输入正确的手机号。');
+				$('input')[1].focus();
+				return;
+			}
+			saveContact(data);
+		});
+		
+		
+		function getQueryString(name) {
+				var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); // 匹配目标参数
+				var result = window.location.search.substr(1).match(reg); // 对querystring匹配目标参数
+				if (result != null) {
+					return decodeURIComponent(result[2]);
+				} else {
+					return null;
+				}
+			}
+
+			var mytype = getQueryString("type");
+			var orderNo = getQueryString("orderNo");
+			
+			var contactsUrl="contacts.html";
+			if(mytype!=null&&mytype!=''&&mytype=="online"){
+				contactsUrl+="?type=online&orderNo="+orderNo;
+	        }else if(mytype!=null&&mytype!=''&&mytype=="innerCity"){
+                contactsUrl+="?type=innerCity&orderNo="+orderNo;
+            }
+
+			//保存手机号码
+			function saveContact(data) {
+				//模拟提交，请将setTimeout改为实际的ajax请求
+				$.showLoading('正在提交数据');
+
+				//api url
+				var urlStr = SERVER_URL_PREFIX + "/Contact/addContact";
+				//current page param
+				var dataObj = {
+					contactNumber : data[1],
+					name : data[0],
+				};
+				//merge page param and common param,generate request param
+				dataObj = genReqData(urlStr, dataObj);
+
+				$.post(urlStr, dataObj, function(result) {
+					$.hideLoading();
+					if (result && result.code == 0) {
+						window.location.href = contactsUrl;
+					} else {
+						$.alert((result && result.message) || "未知错误");
+					}
+				}, 'json');
+
+			}
+		});
+	</script>
+</body>
+</html>

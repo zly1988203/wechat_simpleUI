@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>编辑资料</title>
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="email=no">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <link href="/res/style/simpleui.min.css?v=20170914" rel="stylesheet" type="text/css">
+    <link href="/res/style/base/vectors.2.css?v=20170914" rel="stylesheet" type="text/css">
+    <link href="/res/style/sanqin/myinfo.css?v=20170914" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+    
+    <ul class="sui-list sui-border-b form">
+        <li class="link sui-cell-link">
+        	<input type="file" class="" id="file" style="display:none;" onChange="change(this);"> 
+        	<input type="hidden" id="avatarId" data-change="0"/>
+            <div class="avatar-box" onClick="upImage();">
+                <div  class="avatar" style=""></div>
+                <div class="tips">修改头像</div>
+            </div>
+        </li>
+        <li>
+            <dl class="sui-cell-default control">
+                <dt><label for="nickname">昵称</label></dt>
+                <dd><input type="text" id="nickname" maxlength="10" placeholder="取一个独特的名字吧" class="text-align-right input-placeholder-color-C2"/></dd>
+            </dl>
+        </li>
+        <li>
+            <dl class="sui-cell-default control">
+                <dt><label for="gender">性别</label></dt>
+                <dd>
+	                <select id="gender">
+	                    <option value="1" >男</option>
+	                    <option value="2">女</option>
+	                </select>
+                </dd>
+            </dl>
+        </li>
+        <li>
+            <dl class="sui-cell-default control">
+                <dt><label for="age">年龄</label></dt>
+                <dd>
+                	<select id="age">
+                    <option value="0">00后</option>
+                    <option value="9">90后</option>
+                    <option value="8">80后</option>
+                    <option value="7">70后</option>
+                    <option value="6">60后</option>
+                	</select>
+                </dd>
+            </dl>
+        </li>
+         <li>
+	        <dl class="sui-cell-default control">
+	            <dt><label for="ID">ID</label></dt>
+	            <dd>
+	                <input type="text" id="ID" value="" class="text-align-right input-placeholder-color-99" readonly/>
+	            </dd>
+	        </dl>	
+	    </li>
+	    <li>
+	        <dl class="sui-cell-default control">
+	            <dt><label for="phonenumber">手机号码</label></dt>
+	            <dd>
+	                <input type="text" id="phonenumber"   class="text-align-right input-placeholder-color-99" readonly/>
+	            </dd>
+	        </dl>
+	    </li>
+        
+    </ul>
+    
+    <div class="btn-group">
+	    <button class="default" onclick="javascript:history.back(-1);" >取消</button>
+	    <button class="primary">完成</button>
+	</div>
+	
+	<!--弹窗部分-->
+<div id="mobile-form-container" class="sui-popup-container" >
+        <div class="sui-popup-mask"></div>
+        <div class="sui-popup-modal">
+            <!--内容开始-->
+            <div id="mobile-form">
+                <div class="banner"></div>
+
+                <div class="form">
+                    <div class="mobile text sui-border-b">
+                        <input type="tel" placeholder="请输入手机号码" id="mobile" maxlength="11"/>
+                    </div>
+                    <div class="verifycode text sui-border-b">
+                        <div class="text-box">
+                            <input type="tel" placeholder="请输入验证码" id="verifycode" maxlength="4"/>
+                        </div>
+                        <button type="button" id="sandBtn">获取验证码</button>
+                    </div>
+
+                    <button id="submitButton" type="button" class="submit-btn">立即绑定</button>
+                </div>
+
+               <!--  <div class="skip-binding"><button type="button" id="skip-binding-btn">跳过绑定</button></div> -->
+            </div>
+            <!--内容结束-->
+        </div>
+</div>
+	
+	<script type="text/javascript" src="/js/commonJs.js?v=20170918"></script>
+    <script src="/js/commonjs/jweixin-1.2.0.js?v=20190114"></script>
+	<script type="text/javascript" src="/js/shareConfig.js?v=20170912"></script>
+	<script type="text/javascript" src="/js/commonFoot.js?v=20170912"></script>
+	<script>
+		var loadFinish = false;
+		$(function() {
+			showUser();
+			bindWX();
+			var shareObj = { url : window.location.href }
+   			wxInitConfig(shareObj);
+			
+			 $('.primary').on('click', function() {
+	             var submitBtn = $(this);
+	             var file = $.trim($('#file').val());
+	             var nickname = $.trim($('#nickname').val());
+	             var gender = $.trim($('#gender').val());
+	             var age = $.trim($('#age').val());
+	             var avatarId = $.trim($('#avatarId').val());
+	             var change = $.trim($('#avatarId').data('change'));
+	             
+	             submitBtn.prop('disabled', true);
+	             $.showLoading('正在上传中');
+	             
+	 	    	//api url
+	 			var urlStr = SERVER_URL_PREFIX+"/Account/editInformation";
+	 			//current page param
+	 			var flag=true;
+	 			var dataObj = {};
+	 			if(!isEmpty(nickname)){
+	 				if(nickname.length>10){
+	 					$.toast('不能大于10个中文字');
+	 					flag=false;
+	 				}else{
+	 					dataObj['nickName'] = nickname;
+	 				}
+	 			}
+	 			if(!isEmpty(gender)){
+	 				dataObj['gender'] = gender;
+	 			}
+	 			if(!isEmpty(age)){
+	 				dataObj['age'] = age;
+	 			}
+	 			if(!isEmpty(avatarId)){
+	 				dataObj['avatarId'] = avatarId;
+	 			}
+	 			
+	 			dataObj['change'] = change;
+	 			
+	 			if(!loadFinish) return;
+	 			//merge page param and common param,generate request param
+	  			dataObj = genReqData(urlStr, dataObj);
+	            if(flag){
+	             $.post(urlStr, dataObj, function(result){
+	            	 	$.hideLoading();
+	            	 	submitBtn.prop('disabled', false);
+	                    if(result && result.code == 0){
+	                    	window.location.href='/index';
+	                    }else{
+	                    	$.alert((result&&result.message) || "未知错误");
+	                    }
+	                }, 'json');
+	            } 
+	         });
+			 
+    	});
+		
+		function change(obj){
+			readFile(obj);
+		}
+		
+		//展示紧急联系人列表
+	    function showUser(){
+	    	//api url
+			var urlStr = SERVER_URL_PREFIX+"/Account/queryAccount";
+			//current page param
+			var dataObj = {
+			};
+			//merge page param and common param,generate request param
+ 			dataObj = genReqData(urlStr, dataObj);
+	    	
+	        $.post(urlStr, dataObj, function(result){
+	            if(result && result.code == 0) {
+	            	var gender = parseInt(result.data.gender);
+	            	var age = parseInt(result.data.age);
+	            	var nickName = result.data.nickName;
+	            	var phone=result.data.mobile;
+	            	var identifyId=result.data.identifyId;
+	            	if(!isEmpty(result.data.avatar)){
+	            		$('.avatar').css("background-image","url("+result.data.avatarUrl+")");
+	            		$('#avatarId').val(result.data.avatar);
+	            	}
+	            	loadFinish = true;
+	            	$('#nickname').val(nickName);
+	            	if(gender==1){
+	            		$("#gender option[value='1']").prop("selected", 'selected');
+	            	}else if(gender==2){
+	            		$("#gender option[value='2']").prop("selected", 'selected');
+	            	}
+	            	if(isNaN(age)){
+	            		$('#age').val(0);
+	            	}else{
+	            		$('#age').val(age);
+	            	}
+	            	$('#phonenumber').val(phone);
+	            	$('#ID').val(identifyId);
+	            	if($.trim($('#phonenumber').val()).length<=0) {
+	    				$("#phonenumber").attr("placeholder","未绑定");
+	    				bindPhoneNumber();
+	    			}
+	            }else{
+	            	//$.alert((result&&result.message) || "未知错误");
+	            }
+		    }, 'json');
+	    }
+		
+		//obj,dom对象
+		function readFile(obj){   
+			var file = obj.files[0]; 
+			var reader = new FileReader();
+			var fileName = file.name;
+			
+			//判断类型是不是图片  
+			if(!/image\/\w+/.test(file.type)){     
+				$.toast("请确保文件为图像类型");
+				return false;   
+			}   
+			
+			reader.readAsDataURL(file);   
+			reader.onload = function(e){   
+				//console.log(this.result);
+				upload(this.result, fileName);
+			}
+			
+		}
+		
+		function upload(content, fileName){
+			//api url
+			var urlStr = SERVER_URL_PREFIX+"/Account/upAvatar";
+			//current page param
+			var dataObj = {
+					baseContent: content,
+					fileName:fileName,
+				};
+			//merge page param and common param,generate request param
+ 			dataObj = genReqData(urlStr, dataObj);
+ 			
+			$.post(urlStr, dataObj, function(result){
+				if(result && result.code == 0){
+					$('.avatar').css("background-image","url("+content+")");
+				}else{
+					$.alert((result&&result.message) || "未知错误");
+				}
+			}, 'json');
+		}
+		
+		var localIds;
+		
+		function upImage(){
+			if(is_weixn()){
+				upImageWx();
+			}else{
+				$('#file').click();
+			}
+		}
+		
+		/* function upImageWx(){
+			wx.chooseImage({
+		        count: 1, // 默认9
+		        sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+		        sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+		        success: function (res) {
+		            localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+		            $.alert(res.localIds[0]);
+		            $('.avatar').css("background-image","url("+res.localIds[0]+")");
+		            wx.uploadImage({
+		                localId: localIds[0], // 需要上传的图片的本地ID，由chooseImage接口获得
+		                isShowProgressTips: 1, // 默认为1，显示进度提示
+		                success: function (res) {
+		                    $.alert("serverId"+serverId);
+		                    $('#avatarId').val(serverId);
+		                    $('#avatarId').data('change','1');
+		                    //downloadWxPicAndUploadQiNiu(serverId);
+		                }
+		            });
+		        }
+		    });
+		} */
+		function upImageWx(){
+			wx.chooseImage({
+		        count: 1, // 默认9
+		        sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+		        sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+		        success: function (res) {
+		            localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+		            $('.avatar').css("background-image","url("+res.localIds[0]+")");
+		            wx.getLocalImgData({
+		                localId: res.localIds[0],
+		                success: function (res) {
+		                  var localData = res.localData;
+		                  $('.avatar').css("background-image","url("+localData+")");
+		                }
+		            });
+		            wx.uploadImage({
+		                localId: res.localIds[0], // 需要上传的图片的本地ID，由chooseImage接口获得
+		                isShowProgressTips: 1, // 默认为1，显示进度提示
+		                success: function (res) {
+		                    var serverId = res.serverId; // 返回图片的服务器端ID
+		                    downloadWxPicAndUploadQiNiu(serverId);
+		                }
+		            });
+		        }
+		    });
+		}
+		
+		
+		function downloadWxPicAndUploadQiNiu(serverId){
+			//api url
+			var urlStr = SERVER_URL_PREFIX+"/Account/downloadWxPicAndUploadQiNiu";
+			//current page param
+			var dataObj = {
+					serverId: serverId,
+				};
+			//merge page param and common param,generate request param
+ 			dataObj = genReqData(urlStr, dataObj);
+			
+			$.post(urlStr, dataObj, function(result){
+				if(result && result.code == 0){
+					//$('.avatar').css("background-image","url("+localData+")");
+				}else{
+					$.alert((result&&result.message) || "未知错误");
+				}
+			}, 'json');
+		}
+		
+		//judge open use browser of weixin or not
+		function is_weixn(){  
+		    var ua = navigator.userAgent.toLowerCase();  
+		    if(ua.match(/MicroMessenger/i)=="micromessenger") {  
+		        return true;  
+		    } else {  
+		        return false;  
+		    }  
+		} 
+	   //----绑定手机号----
+	   function bindPhoneNumber() {
+	        $('#phonenumber').on('click', function(){
+	            $('#mobile-form-container').popup('push');
+	        });
+	        // 关闭
+	        $('#skip-binding-btn').click(function() {
+	            $('#mobile-form-container').closePopup();
+	        });
+
+    	}
+	   
+	   //校验验证码 0-校验通过
+	    function checkVerificationCode(flag){
+	        if(0==flag){
+	            $.toastSuccess('绑定成功');
+	            $('#mobile-form-container').closePopup();//回到编辑页面
+	            $("#phonenumber").val($.trim($("#mobile").val()));//手机号码回写
+	        }else{
+	            $.toastError('验证码错误');
+	            //停留在当前页面
+	        }
+	    }
+	   
+	   $(function(){
+		   // 发送验证码
+	        $('#sandBtn').on('click', function() {
+	        	checkMobile($(this));  //发送验证码
+	        });
+
+	        // 立即绑定
+	        $('#submitButton').on('click', function() {
+	            var submitBtn = $(this);
+	            var mobile = $.trim($('#mobile').val());
+	            var verifycode = $.trim($('#verifycode').val());
+
+	            if(mobile.length <= 0 || verifycode.length <= 0) {
+	                $.toast('请填写手机号码和验证码。');
+	                return;
+	            }
+
+	            submitBtn.prop('disabled', true);
+	            $.showLoading('正在绑定中');
+	            var urlStr = SERVER_URL_PREFIX + '/Account/bindPhone';
+            	//current page param
+            	var dataObj = {
+            		mobile:mobile,
+            		verifyCode: verifycode
+            	};
+            	//merge page param and common param,generate request param
+            	dataObj = genReqData(urlStr, dataObj);
+                
+                $.ajax({
+        			type : 'POST',
+        			url : urlStr,
+        			data : dataObj,
+        			dataType : "json",
+        			success : function(result) {
+        				if(result!=null  && result.code==0){
+        					 $.hideLoading();
+        	                 $.toastSuccess('绑定成功');
+        	                 checkVerificationCode(0);
+        	                 location.reload();
+        				}else{
+        					  $.hideLoading();
+        					  //submitBtn.prop('disabled', false);
+        					  $.alert(result.message);
+        				}
+        			},
+        		});
+                
+	        });
+ 
+	   });
+	
+	// 发送验证码 - 倒计时
+	    function sandVerifycode(element) {
+	       // var element = $("#sendcode");
+	        var btnText = element.text();
+	        element.prop('disabled', true);
+	        var duration = 60;
+	        element.text(duration + 's');
+	        var timer = setInterval(function() {
+	            duration--;
+	            if(duration <= 0) {
+	                element.prop('disabled', false).text(btnText);
+	                clearInterval(timer);
+	                return;
+	            }
+	            element.text((duration < 10 ? '0' + duration : duration) + 's');
+	        }, 1000);
+	    }
+	
+		// 发送验证码
+		function sendcode(_this){
+			var mobile = $.trim($('#mobile').val());
+			//api url
+ 			var urlStr = SERVER_URL_PREFIX+"/Account/getVerifyCode";
+ 			//current page param
+ 			var dataObj = {
+ 				mobile: mobile,
+ 			};
+ 			//merge page param and common param,generate request param
+  			dataObj = genReqData(urlStr, dataObj);
+			
+			_this.prop('disabled', true);//禁用发送验证码按钮
+			$.post(urlStr, dataObj, function(result){
+		        if(result && result.code == 0){
+					sandVerifycode(_this);  
+		        }else{
+		        	_this.prop('disabled', false);
+					$.alert((result&&result.message) || '发送失败');
+		        }
+    		}, 'json');
+			
+		}
+		
+		//校验手机号是否已被注册
+		function checkMobile(_this){
+			var mobile = $.trim($('#mobile').val());
+        	if(mobile.length <= 0) {
+                $.toast('请输入手机号码');
+                return;
+            }
+        	if(!(/^1[3456789]\d{9}$/.test(mobile))) {
+                 $.toast("请输入正确的手机号");
+                 return;
+            }
+        	var urlStr = SERVER_URL_PREFIX + '/Account/checkMobile';
+        	//current page param
+        	var dataObj = {
+        		mobile:mobile
+        	};
+        	//merge page param and common param,generate request param
+        	dataObj = genReqData(urlStr, dataObj);
+            $.ajax({
+    			type : 'POST',
+    			url : urlStr,
+    			data : dataObj,
+    			dataType : "json",
+    			success : function(result) {
+    				if(result!=null  && result.code==0){
+    					 sendcode(_this);
+    				}else{
+   					     $.alert(result.message);
+    				}
+    			},
+    		});
+		}
+		
+		
+           function bindWX() {
+	            var urlStr ='/wxUserInfo';
+	        	//current page param
+	        	var dataObj = {
+	        		
+	        	};
+	        	//merge page param and common param,generate request param
+	        	dataObj = genReqData(urlStr, dataObj);
+	            
+	            $.ajax({
+	    			type : 'POST',
+	    			url : urlStr,
+	    			data : dataObj,
+	    			dataType : "json",
+	    			success : function(result) {
+	    				if(result!=null  && result.code==0){
+	    					location.reload();
+	    				}else{
+	    				}
+	    			},
+	    		});
+        }
+
+	</script>
+</body>
+</html>

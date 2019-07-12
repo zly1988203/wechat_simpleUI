@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>优惠券</title>
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="email=no">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <link href="/res/style/simpleui.min.css" rel="stylesheet" type="text/css">
+    <link href="/res/style/base/vectors.2.css" rel="stylesheet" type="text/css">
+    <link href="/res/style/my/myCoupon.css" rel="stylesheet" type="text/css">
+</head>
+<style>
+    .rulePanel{
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 0;
+        width: 100%;
+        height: 100%;
+        display: none;
+        z-index: 8000;
+    }
+
+    .sui-mask {
+        position: fixed;
+        z-index: 1000;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background: rgba(0,0,0,.5);
+    }
+    .sui-modal{
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+        border-radius: 0;
+        -webkit-transition-duration: .3s;
+        transition-duration: .3s;
+        height: 100%;
+        background: #fff;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+</style>
+<body>
+    <div id="enabled-coupons" class="coupon">
+        <div class="popup-modal"></div>
+        <div class="rule-btn">
+            <div class="vali-coupon">
+                可用优惠券
+            </div>
+            <div id="coupon-rule" class="coupon-rule">
+                使用规则
+            </div>
+        </div>
+
+        <div id="enablist" class="coupon-list">
+        </div>
+        <div class="load-more" style="display: none;">
+            <div class="more-txt">更多</div>
+            <div class="icon-more">
+                <i></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- 没有优惠券 -->
+    <div id="noCoupons" class="not-data" style="display: none">暂无优惠券</div>
+
+    <div id="view_disCoupons" class="view-disabled-btn">查看不可用优惠券</div>
+    
+    <!-- 优惠券 - 使用规则 -->
+    <div id="ruleContent" class="rulePanel" style="display: none">
+        <div class="sui-mask"></div>
+        <div class="sui-modal">
+            <div class="rule-content">
+                <div class="close cancel"></div>
+                <h1>优惠券使用规则</h1>
+                <div class="rule-bar">
+                    <div class="content">
+                        <P>缺少文案</P>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <script type="text/javascript" src="/js/commonJs.js"></script>
+    <script type="text/javascript" src="/js/vectors.min.js"></script>
+    <script type="text/javascript" src="/js/personalCenter/coupons.js"></script>
+</body>
+</html>

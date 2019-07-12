@@ -1,0 +1,20 @@
+{
+  "name": "tsp_passenger_wechat",
+  "version": "1.0.0",
+  "description": "",
+  "main": "babel.config.js",
+  "dependencies": {},
+  "devDependencies": {
+    "@babel/plugin-transform-template-literals": "^7.4.4",
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel src/main/app_js/js/commutingBus --out-dir src/main/resources/static/js/commutingBus"
+  },
+  "author": "",
+  "license": "ISC"
+}

@@ -1,0 +1,68 @@
+apply plugin: 'java'  
+  
+sourceCompatibility = 1.8  
+version = ''  
+  
+buildscript {  
+    repositories {  
+        maven{
+        	url "http://maven.aliyun.com/nexus/content/groups/public/"
+        }
+        mavenCentral()  
+    }  
+    dependencies {  
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.9.RELEASE")
+    }  
+}  
+
+apply plugin: 'eclipse'  
+apply plugin: 'spring-boot'  
+  
+springBoot {
+    backupSource = false
+    mainClass = 'com.olakeji.passenger.Application'
+}
+
+bootRun{
+    addResources = true
+}
+  
+repositories {  
+        maven{
+        	url "http://maven.aliyun.com/nexus/content/groups/public/"
+        }
+    jcenter()  
+}  
+  
+configurations {
+    compile.exclude group:'ch.qos.logback'
+}    
+
+dependencies {
+    def tomcatVersion = '8.5.5'
+    compile group: 'org.apache.poi', name: 'poi-ooxml', version: '3.7'
+    compile 'com.qiniu:qiniu-java-sdk:7.2.18'
+	compile fileTree(dir:'libs',include:['*.jar'])
+	compile project(':TSP_cache')
+	compile project(':TSP_common')
+	compile("org.springframework.boot:spring-boot-starter"){
+   		 exclude module: 'org.springframework.boot:spring-boot-starter-logging'
+ 	}
+ 	compile group: 'org.springframework.boot', name: 'spring-boot-starter-log4j2'
+	compile("org.springframework.boot:spring-boot-starter-freemarker")
+    compile group: 'commons-lang', name: 'commons-lang', version: '2.6'
+    // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
+	compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.2'
+    //指定tomcat版本
+    compile("org.apache.tomcat.embed:tomcat-embed-websocket:${tomcatVersion}")
+    compile("org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}")
+    compile("org.apache.tomcat:tomcat-annotations-api:${tomcatVersion}")
+    compile("org.apache.tomcat.embed:tomcat-embed-el:${tomcatVersion}")
+    //热部署
+    compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.springframework.boot:spring-boot-devtools")
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+    compileOnly('org.projectlombok:lombok:1.18.2')
+    compile group: 'com.olakeji.common', name: 'TSP_wechat', version: '2.0.2'
+    testCompile 'junit:junit:4.12'
+}

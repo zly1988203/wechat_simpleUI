@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>紧急联系人</title>
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="email=no">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <link href="/res/style/simpleui.min.css" rel="stylesheet" type="text/css">
+    <link href="/res/style/common.css" rel="stylesheet" type="text/css">
+    <link href="/res/style/contacts.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+    <div class="contact-tip">
+       为了保证您的行程安全<br/>
+       紧急联系人将用于自动分享行程及紧急求助功能 
+    </div>
+    
+    <ul id="contacts" class="sui-list sui-border-b">
+       <!-- <li data-phone="13800138000" data-name="隔壁老王" class="sui-cell-link">隔壁老王</li> -->
+       <li class="add-contact">添加紧急联系人</li>
+    </ul>
+    
+    <div class="sui-list-desc">最多可添加5位联系人</div>
+    
+    
+	<script type="text/javascript" src="/js/commonJs.js"></script>
+	<script type="text/javascript" src="/js/commonFoot.js"></script>
+	<script>
+    $(function() {
+    	
+    	showContactLists();
+        
+        $('.add-contact').on('click', function() {
+            $.dialog({
+               title: '联系人信息',
+               text: '请输入联系人的姓名和手机号',
+               html: '<div class="sui-dialog-input"><input type="text" placeholder="姓名" /><input type="tel" placeholder="手机号码" /></div>',
+               autoClose: false,
+               buttons: [{
+                   text: '取消',
+                   onClick: function() {
+                       $.closeDialog();
+                   }
+               }, {
+                   text: '保存',
+                   onClick: function(data) {
+                       // 判断姓名是否为空
+                       if(data[0].length <= 0) {
+                           $('.sui-dialog-text').addClass('sui-red').text('请输入姓名。');
+                           $('.sui-dialog-input input')[0].focus();
+                           return;
+                       }
+                       
+                    	// 匹配姓名长度
+               		   if(!(/^\S{0,10}$/.test(data[0]))) {
+               			   $('.sui-dialog-text').addClass('sui-red').text('姓名格式有误，请重新输入');
+                           $('.sui-dialog-input input')[0].focus();
+                           return;
+                       }
+                       
+                       // 判断手机号码是否为空
+                       if(data[1].length <= 0) {
+                           $('.sui-dialog-text').addClass('sui-red').text('请输入手机号码。');
+                           $('.sui-dialog-input input')[1].focus();
+                           return;
+                       }
+                       
+                    	// 判断手机号码正确性
+               		   if(!(/^1[3456789]\d{9}$/.test(data[1]))) {
+               			   $('.sui-dialog-text').addClass('sui-red').text('请输入正确的手机号');
+                           $('.sui-dialog-input input')[1].focus();
+                           return;
+                       }
+                       saveContact(data);
+                       $.closeDialog();
+                   }
+               }]
+           });
+        });
+        
+    });
+    
+    //展示紧急联系人列表
+    function showContactLists(){
+    	//api url
+		var urlStr = SERVER_URL_PREFIX+"/Contact/contactsList";
+		//current page param
+		var dataObj = {
+			};
+		//merge page param and common param,generate request param
+		dataObj = genReqData(urlStr, dataObj);
+		
+        $.post(urlStr, dataObj, function(result){
+            if(result && result.code == 0){
+	            	$.each(result.data.list, function (index, contact) {
+	            		$('#contacts').prepend('<li data-phone="' + contact.contactNumber + '" data-name="' + contact.name + '" data-id="' + contact.id + '" class="sui-cell-link">' + contact.name + '</li>');
+	                });
+	            	deleteEventBind();
+            }else{
+            	$.alert((result&&result.message) || "未知错误");
+            }
+	    }, 'json');
+    }
+    
+    //保存手机号码
+    function saveContact(data) {
+        //模拟提交，请将setTimeout改为实际的ajax请求
+        $.showLoading('正在提交数据');
+        
+      	//api url
+		var urlStr = SERVER_URL_PREFIX+"/Contact/addContact";
+		//current page param
+		var dataObj = {
+				contactNumber: data[1],
+        		name: data[0],
+			};
+		//merge page param and common param,generate request param
+		dataObj = genReqData(urlStr, dataObj);
+        
+        $.post(urlStr, dataObj, function(result){
+        	$.hideLoading();
+            if(result && result.code == 0){
+            	$('#contacts').prepend('<li data-phone="' + data[1] + '" data-name="' + data[0]  + '" data-id="' + result.data.id + '" class="sui-cell-link">' + data[0] + '</li>');
+                if($('#contacts .sui-cell-link').length > 4) {
+                    $('.add-contact').hide();
+                }
+                deleteEventBind();
+            }else{
+            	$.alert((result&&result.message) || "未知错误");
+            }
+        }, 'json');
+        
+    }
+        
+    //删除操作
+    function deleteEventBind() {
+        $('#contacts .sui-cell-link').off('click').on('click', function() {
+            var _this = $(this);
+            var name = _this.data('name');
+            var phone = _this.data('phone');
+            
+            $.confirm('姓名：' + name + '<br/>手机号码：' + phone, '提示', ['删除', '确定'], null, function() {
+                $.showLoading('正在删除数据');
+                deteteById(_this.data('id'),_this);
+            });
+        });
+    }
+    
+    function deteteById(id,obj)
+    {
+    	//api url
+		var urlStr = SERVER_URL_PREFIX+"/Contact/delContact";
+		//current page param
+		var dataObj = {
+				id: id,
+			};
+		//merge page param and common param,generate request param
+		dataObj = genReqData(urlStr, dataObj);
+    	
+    	$.post(urlStr, dataObj, function(result){
+    		$.hideLoading();
+            if(result && result.code == 0){
+            	obj.remove();
+            	$('.add-contact').show();
+            }else{
+            	$.alert((result&&result.message) || "未知错误");
+            }
+        }, 'json');
+    }
+    </script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+#showImg {
+    width: 320px;
+    position: absolute;
+    background: #fff;
+    top: 5%;
+    z-index: 3;
+    display: none;
+    background: #F2F2F2;
+    box-shadow: inset 0 0 4px 0 rgba(0, 0, 0, 0.10);
+    border-radius: 6px;
+}
+.pop-invite {
+    width: 340px;
+    position: absolute;
+    background: #fff;
+    top: 17px;
+    left: 17px;
+    z-index: 3;
+    display: none;
+    background: #F2F2F2;
+    box-shadow: inset 0 0 4px 0 rgba(0, 0, 0, 0.10);
+    border-radius: 6px;
+}
+
+#showImg .invite-page, .pop-invite .invite-page {
+    background: #ffffff;
+    color: #fff;
+    text-align: center;
+    font-family: PingFangSC-Medium;
+    overflow: hidden;
+}
+
+#showImg .invite-page img {
+    width: 100%;
+    height: 100%;
+    padding: 9px;
+    max-width:320px;
+    max-height: 460px;
+    -webkit-box-sizing: border-box;
+    display: block;
+}
+
+.pop-invite .invite-page .invite {
+    width: 320px;
+    height: 460px;
+    padding: 9px;
+    background: url(../../images/my/invite-bg.png) no-repeat 50%;
+    background-size: 100% 100%
+}
+
+.pop-invite .invite-page .invite .title {
+    color: #333
+}
+
+.pop-invite .invite-page .invite .title .title-name {
+    font-size: 18px;
+    padding-top: 28px;
+    font-weight: bold;
+}
+
+.pop-invite .invite-page .invite .title .title-explain {
+    font-size: 14px;
+    padding-bottom: 30px;
+    margin-top: 5px;
+}
+
+.pop-invite .invite-page .invite .head {
+    width: 79px;
+    height: 79px;
+    margin-left: 120px;
+    background: url(../../images/my/invite-head.png) no-repeat 50%;
+    background-size: 100% 100%;
+    position: relative
+}
+
+.pop-invite .invite-page .invite .head img {
+    position: absolute;
+    width: 63px;
+    height: 63px;
+    left: 8px;
+    top: 5px;
+    border-radius: 50%;
+    background: #fff;
+}
+
+.pop-invite .invite-page .invite .user-name {
+    font-size: 14px;
+}
+
+.pop-invite .invite-page .invite .invite-explain {
+    width: 235px;
+    margin-top: 10px;
+    margin-bottom: 28px;
+    padding-left: 40px;
+    font-size: 12px;
+    /*display: -webkit-box;*/
+    /*-webkit-box-orient: vertical;*/
+    /*overflow: hidden;*/
+    /*text-overflow: ellipsis;*/
+    /*-webkit-line-clamp: 2;*/
+    /*word-break: break-all;*/
+}
+
+.pop-invite .invite-page .invite .qrcode-img {
+    width: 114px;
+    height: 113px;
+    margin: 0 auto;
+    /*background: url(../../images/my/qrcode-border.png) no-repeat 50%;*/
+    background-size: 100% 100%
+}
+
+.pop-invite .invite-page .invite .qrcode-img img {
+    width: 95px;
+    height: 94px;
+    margin-top: 5px;
+}
+
+.pop-invite .invite-page .invite .qrcode-explain {
+    font-size: 12px;
+}
+
+.pop-invite .invite-page .invite .use-condition {
+    font-size: 12px;
+    opacity: 0.5;
+    margin-top: 25px;
+}
+
+#showImg .invite-tip {
+    text-align: center
+}
+
+#showImg .invite-tip .invite-tip-text {
+    margin-top: .202rem;
+    font-size: .28rem;
+    color: #666;
+    letter-spacing: 0
+}
+
+#showImg .invite-tip .invite-tip-close {
+    width: .71rem;
+    height: .71rem;
+    margin: .107rem auto;
+    background: url(../../images/my/invite-close.png) no-repeat 50%;
+    background-size: 100% 100%
+}
+
+.black_overlay {
+    opacity: .5;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, .7);
+    position: fixed;
+    top: 0;
+    left: 0;
+}

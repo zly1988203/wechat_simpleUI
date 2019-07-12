@@ -1,0 +1,41 @@
+body {
+    background: #fff
+}
+
+.service-rule-container {
+    padding: .4rem .6rem
+}
+
+.service-rule-container .back-box{
+    position: absolute;
+    top: .24rem;
+    left: 0;
+    width: .8rem;
+    height: .8rem;
+    display: flex;
+    align-items: center;
+}
+
+.service-rule-container .back-box .back-btn {
+    width: .24rem;
+    height: .34rem;
+    background: url(../../images/newInnerCity/icon-left.png) 50% no-repeat;
+    background-size: 100% 100%;
+    margin: 0 auto;
+}
+
+.service-rule-container .rule-title {
+    font-size: .38rem;
+    color: #333;
+    text-align: center
+}
+
+.service-rule-container .rules-content {
+    margin-top: .8rem
+}
+
+.service-rule-container .rules-content p {
+    font-size: .24rem;
+    color: #666;
+    letter-spacing: 0
+}

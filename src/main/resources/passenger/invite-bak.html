@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>邀请有礼</title>
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="email=no">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <link href="/res/style/simpleui.min.css" rel="stylesheet" type="text/css">
+    <link href="/res/style/common.css" rel="stylesheet" type="text/css">
+    <link href="/res/style/invite.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+	
+	<div class="invite-infobar">
+	    <div class="image"></div>
+	    <div id="firContent" class="tip">送给朋友10元乘车优惠，当TA首次乘车时</div>
+	    <div id="secContent" class="award"></div>
+	</div>
+   
+    <div class="qrcode">
+        <img id="qrcode" src="" align="middle">
+    </div>
+    
+    <div class="invite-foot">
+        <button>邀请好友</button>
+        <div class="links">
+            <span id="recommend">已成功推荐<i>0</i>人</span> |
+            <span id="coupon">  累计获得优惠券<i>0</i>张</span>
+        </div>
+    </div>
+
+	<!--分享-->
+	<div class="share" style="display:none">
+	    <div class="arrow"></div>
+	    <div class="tip">
+            点击右上角“发送给好友/分享到朋友圈”<br/>即可邀请朋友加入
+        </div>
+	</div>
+	
+	<script type="text/javascript" src="/js/commonJs.js"></script>
+    <script src="/js/commonjs/jweixin-1.2.0.js?v=20190114"></script>
+	<script type="text/javascript" src="/js/shareConfig.js"></script>
+	<script type="text/javascript" src="/js/commonFoot.js"></script>
+	<script>
+	
+	//api url
+	var urlStr = SERVER_URL_PREFIX+"/coupon/inviteGift";
+	//current page param
+	var dataObj = {
+	};
+	//merge page param and common param,generate request param
+	dataObj = genReqData(urlStr, dataObj);
+		
+    $(function() {
+    	backtoUrl('/passenger/my/my.html');
+    	        
+    	$.ajax({
+        	type: 'POST',
+        	url: urlStr,
+        	data:dataObj,
+        	dataType:  "json",
+        	success: function(data) {
+        		if (data.code == 0) { //请求成功
+        			var resContent = data.data;
+        			var couponContent = resContent.couponContent;
+        			var qrUrl = resContent.qrUrl;
+        			var isStaff = resContent.isStaff;
+        			var recommendNum = resContent.recommendNum;
+        			var inviteAmount = resContent.inviteAmount;
+        			
+        			if (inviteAmount > 0) { //有邀请者奖券，则进行增强显示
+        				var contentArray = couponContent.split('-');
+        				$('#firContent').html(contentArray[0]);
+        				$('#secContent').html(contentArray[1]);
+        			} else {
+        				$('#firContent').html(couponContent);
+        			}
+        			
+        			$('#qrcode').attr('src', qrUrl);
+        			var target = $('#recommend').html();
+        			target = target.replace('0', recommendNum);
+        			
+        			$('#recommend').html('');
+        			$('#recommend').append(target);
+        			
+        			var couponContent = $('#coupon').html();
+        			if (isStaff == 1) { //是员工，显示员工排行榜
+        				couponContent = '员工排行榜';
+        				$('#coupon').on('click', function() {
+							location.href = '/passenger/staff-ranklist.html';
+						});
+        			} else { //非员工，显示获得的优惠券张数
+        				couponContent = couponContent.replace('0', resContent.couponCount);
+        			}
+        			
+        			$('#coupon').html('');
+        			$('#coupon').append(couponContent);
+        			
+        			var desc = resContent.couponCampaignTemplate ? 
+        					resContent.couponCampaignTemplate.templateShareDesc||'我出行一直用中交出行，经济又实惠，邀你免费来体验。点击链接领取。'
+        					: '我出行一直用中交出行，经济又实惠，邀你免费来体验。点击链接领取。';
+        			var title = resContent.couponCampaignTemplate ? 
+        					resContent.couponCampaignTemplate.templateShareTitle||'Hi 朋友，邀您一起出行' 
+        					: 'Hi 朋友，邀您一起出行';
+        			var shareObj = { //优惠券分享标题、链接和描述从后台获取
+	   					url : window.location.href,
+	   					desc : desc,
+	   					title : title,
+	   					reqURL : resContent.reqURL,
+	   					logo: resContent.logoUrl,
+           			}
+           			wxInitConfig(shareObj);
+        			
+        		} else {
+        			$.toastError(data.msg);
+        		}
+        	},
+        });
+    	
+    	$('#recommend').on('click', function() {
+    		location.href = '/passenger/invite-list.html';
+    	});
+    	
+        $('.invite-foot button').on('click', function() {
+            $('.share').show();
+        });
+        $('.share').on('click', function() {
+            $(this).hide();
+        })
+    });
+    </script>
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>订单</title>
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="email=no">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <link href="/res/style/simpleui.min.css?v=20171114" rel="stylesheet" type="text/css">
+    <link href="/res/style/my/myorder.css?v=20171114" rel="stylesheet" type="text/css">
+    <link href="/res/style/base/vectors.2.css?version=20171114" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="/js/commonjs/orderBar.js?v=20171110"></script>
+</head>
+
+<body>	
+	<div class="tab" id="tabList">
+	</div>
+	<div class="order-container" id="order-container">
+		<div class="custom" id="order-list"></div>
+		<div class="empty-page order-empty" style="display:none">
+            <i style="background-image: url(/res/images/common/icon_no_order.png);"></i>
+            <p>您当前没有订单</p>
+        <!-- <div class="btn-group">
+                <button class="btn primary" onclick="toBusIndex()">去购票</button>
+         </div> -->
+   		</div>
+	</div>
+    <script>
+        /*---此句代码解决页面滑动的问题---*/
+        window.PointerEvent = undefined;
+        /*------------------------------*/
+    </script>
+	<script type="text/javascript" src="/js/commonJs.js?v=20170704"></script>
+	<script>
+		backtoUrl('/hail/interCityIndex');
+		//查询此车企存在的业务类型
+    	getBusinessTypes('interCityOnline');//include /js/commonjs/orderBar.js
+    
+		// 分页选项
+		var _options = {
+	        number: 1,  // 页码
+	        flag: false // 事件锁
+	    };
+		var isPage = 0;
+		var databackRequest={};
+		var contentCount = 0; //两次列表获取，如果都为空，跳转到空页面
+		//等待，已预约，进行中的订单
+		function underWayOrders(){
+			$.ajax({
+				type : 'POST',
+				url : '/hail/innerCity/order/underWayOrders',
+				data : {},
+				dataType : "json",
+				success : function(data) {
+					var html = '';
+					if (data.code == 0){
+						if (undefined != data.data && null != data.data){
+							var contentList = data.data;
+							if(contentList.length>0){
+								for(var i=0;i<contentList.length;i++){
+									contentCount++;
+									html += '<div class="order-item" data-url="/hail/innerCity/order/toOrderDetail?orderNo='+contentList[i].orderNo+'">';
+									html += '<div class="head">';
+									html += '<span class="text-gray">下单时间：'+contentList[i].createTimeStr+'</span>';
+									if(contentList[i].orderGroupStatus==1){
+										if(contentList[i].status == 3){
+											html += '<span class="status status-orange">待支付</span>';
+										}else{
+											html += '<span class="status status-orange">等待接单</span>';
+										}
+									}else if(contentList[i].orderGroupStatus==2){
+										html += '<span class="status status-orange">待执行</span>';
+									}else if(contentList[i].orderGroupStatus==3){
+										html += '<span class="status status-green">进行中</span>';
+									}
+									html += '</div>';
+									html += '<div class="content">';
+									html += '<div class="time">'+contentList[i].departTimeDesc+'</div>';
+									html += '<div class="row">';
+									html += '<div class="address">';
+									html += '<span class="start">'+contentList[i].departTitle+'</span>';
+									html += '<span class="end">'+contentList[i].arriveTitle+'</span>';
+									html += '</div>';
+									if(contentList[i].orderGroupStatus!=1 && contentList[i].status != 3){
+										html += '<div class="price"><span class="text-gray">实付</span><i>&yen;</i>'+contentList[i].payPrice+'</div>';
+									}
+									html += '</div></div></div>';
+								}
+								$('#order-list').append(html);
+							}
+						}
+					}
+					
+					$('[data-url]').off('click')
+					.on('click',function() {
+						location.href = $(this).data('url');
+					});
+					
+					requestServer();
+				}
+			});
+		}
+		
+		var requestServer = function() {
+            //不为0的时候加载
+			$('#order-container').loading();
+			// 显示分页指示器
+			var dataObj = {
+				page : _options.number,
+			};
+			
+			$.ajax({
+				type : 'POST',
+				url : '/hail/innerCity/order/queryInnerCityFinishedOrders',
+				data : dataObj,
+				dataType : "json",
+				success : function(data) {
+						isPage = 1;
+						if(!databackRequest[_options.number]||databackRequest[_options.number]==null){
+							var pageCount = 1;
+							var contentList = data.data.data;
+							if(contentList.length>0){
+								var html = '';
+								for(var i=0;i<contentList.length;i++){
+									contentCount++;
+									html += '<div class="order-item" data-url="/hail/innerCity/order/toOrderDetail?orderNo='+contentList[i].orderNo+'">';
+									html += '<div class="head">';
+									html += '<span class="text-gray">下单时间：'+contentList[i].createTimeStr+'</span>';
+									if(contentList[i].isRefundFlag == 3){
+										html += '<span class="status status-gray">已退款</span>';
+									}else if(contentList[i].status == 6){
+										html += '<span class="status status-green">已完成</span>';
+									}else{
+										html += '<span class="status status-gray">已取消</span>';
+									}
+									html += '</div>';
+									html += '<div class="content">';
+									html += '<div class="time">'+contentList[i].departTimeDesc+'</div>';
+									html += '<div class="row">';
+									html += '<div class="address">';
+									html += '<span class="start">'+contentList[i].departTitle+'</span>';
+									html += '<span class="end">'+contentList[i].arriveTitle+'</span>';
+									html += '</div>';
+									if(contentList[i].isRefundFlag == 3){
+										html += '<div class="price"></div>';
+										//html += '<div class="price"><span class="text-gray">实付</span><i>&yen;</i>6.5</div>';
+									}else{
+										if(contentList[i].status == 6 ){
+											html += '<div class="price"><i>&yen;</i>'+contentList[i].payPrice+'</div>';
+										}
+									}
+									html += '</div></div></div>';
+									
+								}
+								$('#order-list').append(html);
+							}
+							
+							$('[data-url]').off('click')
+							.on('click',function() {
+								location.href = $(this).data('url');
+							});
+							
+							$.hideLoading();
+							if (contentCount == 0) { //两个列表内容均为空
+								$(".order-empty").show();
+							} 
+							var pageCount = Math.ceil(data.data.totalCount/data.data.pageSize);
+							// 销毁分页指示器的逻辑：
+							// 1.假定最大页码是5页, 已经到第5页，移除
+							// 2.假定数据不满一页，没有滚动条时候，移除
+							if (_options.number >= pageCount) {
+								$(document.body).rollPage('destroy'); // 销毁事件
+								$('#order-container').hideLoading(); // 隐藏分页指示器
+								return;
+							}
+		
+							_options.number++; // 页码自增
+							_options.flag = false; // 数据渲染完成，事件解锁
+							databackRequest[_options.number]=0;
+							
+						}
+					},
+				});
+		
+		}
+		underWayOrders();
+		
+		$(document.body).rollPage('load', function() {
+			// 事件锁, 防止频繁触发事件
+			if (_options.flag)
+				return;
+			_options.flag = true;
+			// 页面滚动到底部请求下一页
+			if(isPage == 1){
+				requestServer();
+			}
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>乘车指南</title>
+<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+<meta name="format-detection" content="telephone=no">
+<meta name="format-detection" content="email=no">
+<meta http-equiv="X-UA-Compatible" content="chrome=1" />
+
+<link href="/res/style/simpleui.min.css" rel="stylesheet" type="text/css">
+<link href="/res/style/common.css" rel="stylesheet" type="text/css">
+<link href="/res/style/passenger/article.css" rel="stylesheet" type="text/css">
+</head>
+<script type="text/javascript" src="/js/commonJs.js"></script>
+<script type="text/javascript" src="/js/commonFoot.js"></script>
+<script type="text/javascript">
+	//api url
+	var urlStr = SERVER_URL_PREFIX + '/Page';
+	//current page param
+	var dataObj = {
+			type:22,//user guide
+		};
+	//merge page param and common param,generate request param
+	dataObj = genReqData(urlStr, dataObj);
+	
+	$(function() {
+		$.ajax({
+			type : 'POST',
+			url : urlStr,
+			data : dataObj,
+			dataType : "json",
+			success : function(result) {
+				if(result && result.data){
+					$("article").html(result.data);
+				}else{
+					$.alert((result&&result.message) || "未知错误");
+				}
+			},
+		});
+	})
+</script>
+<body>
+	<article>
+	</article>
+</body>
+</html>

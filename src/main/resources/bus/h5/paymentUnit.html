@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>加载中...</title>
+    <meta name="viewport"
+          content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="email=no">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+</head>
+<body>
+<script type="text/javascript" src="/js/commonJs.js?v=2019011114300"></script>
+<script src="/js/vectors.min.js?v=2019011114300"></script>
+<script>
+    function getQueryString(key) {
+        var strURL =  window.location.search;
+        return new RegExp("(^|\\?|&)" + key + "=([^&]*)(\\s|&|$)", "i").test(strURL) ? decodeURIComponent(RegExp.$2.replace(/\+/g, "")) : "";
+    }
+
+    function init() {
+        var payStatus = getQueryString('payStatus');
+        var orderNo = getQueryString('orderNo');
+        orderNo = orderNo.replace('\u0000', '');
+
+        if(payStatus == '1'){
+            window.location='/bus/toPaySuccess?orderNo='+orderNo;
+        }else{
+            window.location.href="/bus/toBusOrderDetail?token="+$.cookie('token')+"&orderNo="+orderNo;
+        }
+    }
+
+    $(function () {
+        init();
+        // $.alert(window.location.search,function () {
+        //     init();
+        // })
+    });
+
+</script>
+</body>
+</html>

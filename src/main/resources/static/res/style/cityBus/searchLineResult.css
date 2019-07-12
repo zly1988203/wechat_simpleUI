@@ -1,0 +1,526 @@
+body,html {
+    min-height: 100%;
+    height: 100%;
+    background: #f2f2f2
+}
+
+.search-date-content {
+    background: #f2f2f2;
+    box-shadow: 0 0 .2rem 0 rgba(0,0,0,.1);
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    /*-webkit-box-pack: justify;*/
+    /*-webkit-justify-content: space-between;*/
+    /*justify-content: space-between;*/
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    height: 1rem;
+    text-align: center;
+    color: #6392fe;
+}
+
+.search-date-content .change-day {
+    padding: .4rem .2rem;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    font-size: 0.24rem;
+}
+
+.search-date-content .last-day{
+    left: 0;
+}
+.search-date-content .last-day:before {
+    content: "";
+    display: block;
+    width: .08rem;
+    height: .16rem;
+    background: url(../../images/busCity/more_icon.png) 50% no-repeat;
+    background-size: 100% 100%;
+    transform:rotate(180deg);
+    -ms-transform:rotate(180deg); /* Internet Explorer */
+    -moz-transform:rotate(180deg); /* Firefox */
+    -webkit-transform:rotate(180deg); /* Safari 和 Chrome */
+    -o-transform:rotate(180deg); /* Opera */
+    margin-right: 0.1rem;
+}
+.search-date-content .next-day:after {
+    content: "";
+    display: block;
+    width: .08rem;
+    height: .16rem;
+    background: url(../../images/busCity/more_icon.png) 50% no-repeat;
+    background-size: 100% 100%;
+    margin-left: 0.1rem;
+}
+
+.search-date-content .current-box {
+    font-size: .32rem;
+
+    padding: 0 0 0 .45rem;
+    position: relative;
+    margin: 0 auto;
+}
+
+.search-date-content .current-box:before {
+    content: "";
+    display: block;
+    width: .34rem;
+    height: .37rem;
+    background: url(../../images/busCity/icon-calendar.png) 50% no-repeat;
+    background-size: 100% 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto 0
+}
+.search-date-content .next-day{
+    right: 0;
+}
+
+.date-content {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    left: 0;
+    right: 0;
+    z-index: 19;
+    top: 1rem;
+    background: rgba(0,0,0,0.5);
+}
+.date-content .date-content-box{
+    background: #F2F2F2;
+    padding-bottom: 0.2rem;
+}
+
+.main-content {
+    margin-top: 1.2rem;
+    padding-bottom: 1.2rem
+}
+
+.main-content .result-line-list>ul>li.line-item {
+    background: #fff;
+    box-shadow: 0 0 .2rem 0 rgba(0,0,0,.1);
+    border-radius: .06rem;
+    margin: .2rem .2rem 0;
+    padding: .2rem .2rem 0;
+}
+
+.main-content .result-line-list>ul>li.line-item .line-top {
+    position: relative
+}
+
+.main-content .result-line-list>ul>li.line-item .line-top .top-left {
+    font-size: .28rem
+}
+
+.main-content .result-line-list>ul>li.line-item .line-top .top-left span.start-time {
+    color: #333;
+    font-size: .32rem;
+    font-weight: bold;
+}
+
+.main-content .result-line-list>ul>li.line-item .line-top .top-left span.line-name {
+    color: #ccc;
+    margin-left: .2rem
+}
+
+.main-content .result-line-list>ul>li.line-item .line-top .top-right {
+    position: absolute;
+    right: -.2rem;
+    top: 0
+}
+
+.main-content .result-line-list>ul>li.line-item .line-top .top-right .line-price {
+    background: #EC5A6C;
+    box-shadow: 0 0 .2rem 0 hsla(0,0%,89%,.4);
+    border-radius: 1rem 0 0 1rem;
+    font-size: .28rem;
+    color: #fff;
+    padding: 0 .2rem;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+}
+.main-content .result-line-list>ul>li.line-item .line-top .top-right .line-price span{
+    font-size: 0.2rem;
+}
+
+.main-content .result-line-list>ul>li.line-item .line-top .top-right .original {
+    font-size: .24rem;
+    color: #ccc;
+    text-align: right;
+    padding-right: .2rem;
+    text-decoration: line-through
+}
+
+.main-content .result-line-list>ul>li.line-item .all-distance{
+    font-size: .2rem;
+    color: #CCCCCC;
+    padding-top: .05rem
+}
+
+.main-content .result-line-list>ul>li.line-item .line-middle,.main-content .result-line-list>ul>li.line-item .line-middle .station-list .station-item {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: baseline;
+    align-items: baseline;
+    /* margin-top: .2rem */
+}
+
+.main-content .result-line-list>ul>li.line-item .line-middle .station-list{
+    width: 100%;
+    margin-top: .2rem;
+}
+.main-content .result-line-list>ul>li.line-item .line-middle .station-list .item-distance{
+    font-size:.2rem;
+    color:#ccc;
+    text-align:right;
+    position:absolute;
+    right:0;
+    display:-webkit-box;
+    display:-webkit-flex;
+    display:flex;
+    -webkit-box-align:center;
+    -webkit-align-items:center;
+    align-items:center
+}
+
+.main-content .result-line-list>ul>li.line-item .line-middle .station-list .item-distance i{
+    display:inline-block;
+    width:.1rem;
+    height:.2rem;
+    background:url(../../images/busCity/icon-walk.png) 50% no-repeat;
+    background-size:100% 100%;
+    margin-right:.12rem
+}
+
+.main-content .result-line-list>ul>li.line-item .line-middle .station-list .station-item {
+    padding: .08rem 0;
+    position: relative
+}
+
+.main-content .result-line-list>ul>li.line-item .line-middle .station-list .station-item .item-name {
+    font-size: .28rem;
+    color: #333;
+    padding-left: .3rem;
+    max-width: 4.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    position: relative
+}
+.main-content .result-line-list>ul>li.search .line-middle .station-list .station-item .item-name{
+    max-width: 3.4rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.main-content .result-line-list>ul>li.line-item .line-middle .station-list .station-item .item-name:before {
+    content: "";
+    width: .1rem;
+    height: .1rem;
+    border-radius: 100%;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+    background: #ccc
+}
+
+.main-content .result-line-list>ul>li.line-item .line-middle .station-list .station-item .item-time {
+    padding-left: .1rem
+}
+
+.main-content .result-line-list>ul>li.line-item .line-middle .station-list .station-item .item-type {
+    font-size: .2rem;
+    color: #ccc;
+    position: relative;
+    padding-left: .1rem
+}
+
+.main-content .result-line-list>ul>li.line-item .line-middle .station-list .station-item:before {
+    content: "";
+    display: block;
+    width: 0;
+    height: .5rem;
+    border-left: 1px dashed #d3d2db;
+    position: absolute;
+    left: .04rem;
+    top: 59%
+}
+
+.main-content .result-line-list>ul>li.line-item .line-middle .station-list .station-item:last-child:before {
+    display: none
+}
+
+.main-content .result-line-list>ul>li.line-item .line-middle .station-list .get-on .item-name:before {
+    /*background: url(../../images/busCity/icon-on.png) 50% no-repeat;*/
+    /*background-size: 100% 100%;*/
+    background: #65D1A1;
+}
+
+.main-content .result-line-list>ul>li.line-item .line-middle .station-list .get-on-gray .item-name:before {
+    /*background: url(../../images/busCity/icon-on-gray.png) 50% no-repeat;*/
+    /*background-size: 100% 100%*/
+    background: #CCCCCC;
+}
+
+.main-content .result-line-list>ul>li.line-item .line-middle .station-list .get-off .item-name:before {
+    /*background: url(../../images/busCity/icon-off.png) 50% no-repeat;*/
+    /*background-size: 100% 100%*/
+    background: #EC5A6C;
+}
+
+.main-content .result-line-list>ul>li.line-item .line-middle .station-list .get-off-gray .item-name:before {
+    /*background: url(../../images/busCity/icon-off-gray.png) 50% no-repeat;*/
+    /*background-size: 100% 100%*/
+    background: #CCCCCC;
+}
+
+.main-content .result-line-list>ul>li.line-item .line-middle .station-gray {
+    overflow: hidden;
+    -webkit-transition: height .3s;
+    transition: height .3s
+}
+
+.main-content .result-line-list>ul>li.line-item .line-middle .station-gray .station-item:last-child:before {
+    content: "";
+    display: block;
+    width: 0;
+    height: .2rem;
+    border-left: 1px dotted #d3d2db;
+    position: absolute;
+    left: .11rem;
+    top: 76%
+}
+
+.main-content .result-line-list>ul>li.line-item .line-middle>.flex-bar {
+    text-align: right;
+    position: absolute;
+    right: .2rem
+}
+
+.main-content .result-line-list>ul>li.line-item .line-middle>.flex-bar .switch-o {
+    height: .3rem;
+    width: .18rem;
+    margin: 0 auto;
+    background: url(../../images/busCity/icon_more.png) 50% no-repeat;
+    background-size: 100% 100%;
+    -webkit-transition: all .3s;
+    transition: all .3s
+}
+
+.main-content .result-line-list>ul>li.line-item .line-middle>.flex-bar .switch-t {
+    -webkit-transform: rotate(-90deg);
+    transform: rotate(-90deg)
+}
+
+.main-content .result-line-list>ul>li.line-item .line-middle>.flex-bar .switch-b {
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg)
+}
+
+.main-content .result-line-list>ul>li.line-item .line-middle>.flex-bar .switch-btn {
+    font-size: .14rem;
+    color: #333;
+    padding: 0 .2rem;
+    border-radius: .06rem
+}
+
+.main-content .result-line-list>ul>li.line-item .line-bottom {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    position: relative;
+    -webkit-box-pack: justify;
+    -webkit-justify-content: space-between;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.main-content .result-line-list>ul>li.line-item .line-bottom .services-group {
+    width: 5rem;
+    /* min-height: .8rem; */
+}
+
+.main-content .result-line-list>ul>li.line-item .line-bottom .services-group .tag {
+    display: inline-block;
+    background: rgba(99,146,254,0.20);
+    border-radius: .06rem;
+    font-size: .2rem;
+    color: #6392FE;
+    text-align: center;
+    margin-right: .2rem;
+    margin-top: .2rem;
+    line-height: normal;
+    padding: 0.04rem .07rem 0.05rem;
+}
+
+.main-content .result-line-list>ul>li.line-item .line-bottom .services-group .tag:last-child {
+    margin-left: 0
+}
+
+.main-content .result-line-list>ul>li.line-item .line-bottom{
+    padding-bottom: 0.2rem;
+}
+.main-content .result-line-list>ul>li.line-item .line-bottom .bottom-right {
+    text-align: right;
+    position: absolute;
+    right: 0;
+    bottom: .2rem;
+}
+
+.main-content .result-line-list>ul>li.line-item .line-bottom .bottom-right .store-tips {
+    font-size: .2rem;
+    color: #999;
+}
+
+.main-content .result-line-list>ul>li.line-item .line-bottom .bottom-right .buy-ticket-btn {
+    background: #6392fe;
+    box-shadow: 0 0 .2rem 0 rgba(61,59,238,.3);
+    border-radius: .06rem;
+    text-align: center;
+    color: #fff;
+    margin-top: .08rem;
+    width: .96rem;
+    height: 0.5rem;
+    line-height: 0.5rem;
+    font-size: 0.24rem;
+}
+
+.main-content .result-line-list>ul>li.sell-out .line-top .top-left span.start-time {
+    color: #ccc
+}
+
+.main-content .result-line-list>ul>li.sell-out .line-top .top-right .line-price {
+    background: #ccc
+}
+
+.main-content .result-line-list>ul>li.sell-out .line-middle .station-list .station-item .item-name,.main-content .result-line-list>ul>li.sell-out .line-middle .station-list .station-item .item-time {
+    color: #ccc
+}
+
+.main-content .result-line-list>ul>li.sell-out .line-middle .station-list .get-on .item-name:before {
+    background: url(../../images/busCity/grey_circle_icon.png) 50% no-repeat;
+    background-size: 100% 100%
+}
+
+.main-content .result-line-list>ul>li.sell-out .line-middle .station-list .get-off .item-name:before {
+    background: url(../../images/busCity/grey_circle_icon.png) 50% no-repeat;
+    background-size: 100% 100%
+}
+
+.main-content .result-line-list>ul>li.sell-out .line-middle .flex-bar .switch-btn {
+    color: #ccc
+}
+
+.main-content .result-line-list>ul>li.sell-out .line-bottom .services-group .tag {
+    background: rgba(204,204,204,0.20);
+    color: #CCCCCC;
+}
+
+.main-content .result-line-list>ul>li.sell-out .line-bottom .bottom-right .store-tips {
+    color: #ccc
+}
+
+.main-content .result-line-list>ul>li.sell-out .line-bottom .bottom-right .buy-ticket-btn {
+    background: inherit;
+    color: #ccc;
+    box-shadow: none
+}
+
+.main-content .no-line-box {
+    padding-top: 1.4rem
+}
+
+.main-content .no-line-box .no-line {
+    width: 3.22rem;
+    height: 3.4rem;
+    background: url(../../images/busCity/no-line-bg.png) 50% no-repeat;
+    background-size: 100% 100%;
+    margin: 0 auto
+}
+
+.main-content .no-line-box .no-line-tips {
+    font-size: .24rem;
+    color: #999;
+    letter-spacing: 0;
+    text-align: center;
+    margin: .4rem auto 0
+}
+
+.handle-list {
+    position: fixed;
+    bottom: 0;
+    padding: .2rem;
+    z-index: 10
+}
+
+.handle-list .handle {
+    background: #fff;
+    box-shadow: 0 0 .2rem 0 hsla(0,0%,89%,.4);
+    border-radius: .06rem;
+    font-size: .32rem;
+    color: #aaa;
+    letter-spacing: 0;
+    text-align: center;
+    padding: .15rem .4rem
+}
+
+.handle-list .handle:active {
+    background: #ccc
+}
+
+.sui-popup-container {
+    height: 90%
+}
+
+.stopScroll {
+    overflow: hidden
+}
+
+.date-container {
+    background: #fff;
+    max-height: 8rem;
+    overflow-y: scroll
+}
+
+.date-container .paging-tips {
+    font-size: .18rem;
+    color: #999;
+    letter-spacing: 0;
+    text-align: center;
+    padding: .2rem 0
+}
+
+.date-container .content .week-box {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #fff;
+    z-index:10;
+}
+
+.date-container .content .date-box {
+    padding-top: 0.8rem;
+}
+
+.main-content .no-lines-content{
+
+}

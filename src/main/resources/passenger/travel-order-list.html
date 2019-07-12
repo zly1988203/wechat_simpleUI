@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>订单</title>
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="email=no">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+	<link href="/res/style/simpleui.min.css?v=20171114" rel="stylesheet" type="text/css">
+    <link href="/res/style/my/myorder.css?v=20171114" rel="stylesheet" type="text/css">
+    <link href="/res/style/base/vectors.2.css?version=20171114" rel="stylesheet" type="text/css"> 
+</head>
+
+<body>
+	<div class="tab" id="tabList">
+	</div>
+	<div class="order-container" id="parentTemplate">
+		<div class="custom" id="order-list"></div>
+		<div class="empty-page order-empty" style="display:none">
+	            <i style="background-image: url(/res/images/common/icon_no_order.png);"></i>
+	            <p>您当前没有订单</p>
+	        <div class="btn-group">
+	                <button class="btn primary" onclick="toBusIndex()">去购票</button>
+	         </div>
+	   </div>
+   </div>
+    <script>
+        /*---此句代码解决页面滑动的问题---*/
+        window.PointerEvent = undefined;
+        /*------------------------------*/
+    </script>
+    <script type="text/javascript" src="/js/commonJs.js?v=20170704"></script>
+    <script type="text/javascript" src="/js/commonFoot.js?v=20170704"></script>
+    <script type="text/javascript" src="/js/commonjs/orderBar.js"></script>
+    <!-- start Dplus --><script src="/js/udplus.js"></script><!-- end Dplus -->
+<script type="text/javascript">   
+var providerDomin = document.domain.split('.')[0];
+dplus.track("浏览订单列表页",{
+	"车企":providerDomin,
+	"业务":"旅游班线",
+	"页面名称":"订单列表",
+	"页面URL":window.location.href
+});
+
+function toBusIndex(){
+	var urlStr = SERVER_URL_PREFIX+'/travelIndex';
+	var dataObj = {	
+	};
+	
+	dataObj = genReqData(urlStr, dataObj);
+	window.location.href="/travelIndex?token="+dataObj.token;
+}
+
+ function orderDetail(orderNo,orderType,that){
+	 if(orderType == 7){
+			var urlStr = SERVER_URL_PREFIX+'/bus/toCommuteOrderDetail';
+			var dataObj = {	
+			};
+			dataObj = genReqData(urlStr, dataObj);
+			window.location.href="/bus/toCommuteOrderDetail?token="+dataObj.token+"&orderNo="+orderNo+"&sign="+dataObj.sign;
+	}else{
+		//alert(document.domain.split('.')[0]);
+		//alert($(that).find('.status').eq(0).text());
+		dplus.track("订单列表-查看订单详情",{
+			"车企":providerDomin,
+			"业务":"定制班线",
+			"订单状态":$(that).find('.status').eq(0).text(),
+			"页面名称":"订单列表",
+		});
+		
+		var urlStr = SERVER_URL_PREFIX+'/busline/busOrder/orderDetail';
+		var dataObj = {	
+		};
+		dataObj = genReqData(urlStr, dataObj);
+		window.location.href="/bus/toBusOrderDetail?token="+dataObj.token+"&orderNo="+orderNo+"&sign="+dataObj.sign;
+	}
+} 
+
+    // 分页选项
+    var _options = {
+        number: 0,  // 页码
+        flag: false // 事件锁
+    };
+            
+    $(function() {
+    	backtoUrl('/index');
+        
+    	//导航栏
+    	getBusinessTypes('travel');//引入js/commonjs/orderBar.js
+    	
+    	
+        //初始化
+        bindPageEvent();
+        requestServer();
+    });
+        
+ 	// 绑定分页事件
+    function bindPageEvent() {
+        $(document.body).rollPage('destroy');
+        /* $('#datalist').hideLoading(); */
+        $(document.body).rollPage('load', function() {
+        	// 页面滚动到底部请求下一页
+            requestServer();
+        });
+    }
+    // 模拟数据请求
+    var requestServer = function() {
+    	// 事件锁, 防止频繁触发事件
+        if(_options.flag) return;
+    	_options.flag = true;
+        // 显示分页指示器
+        /* $('#datalist').loading(); */
+
+      	//api url
+		var urlStr = SERVER_URL_PREFIX+"/busline/busOrder/getOrderList";
+		//current page param
+		var dataObj = {
+			orderType : 9,	
+			page : _options.number+1,
+            pageSize : 5,
+		};
+		//merge page param and common param,generate request param
+		dataObj = genReqData(urlStr, dataObj);
+			
+        $.post(urlStr, dataObj, function(result){
+        	/* $('#datalist').hideLoading(); */
+            _options.flag = false;   // 数据渲染完成，事件解锁
+            if (result.code == 0) {
+                var strHtml ='';
+                var totalCount = result.data.totalCount;
+                var list = result.data.data;
+                var pageSize = result.data.pageSize;
+                
+                if (list.length <= 0) {
+					$(".empty-page").css('display', 'block');
+                	$(document.body).rollPage('destroy');   // 销毁事件
+                	/* $('#datalist').hideLoading(); */
+                } else {
+                    for(var i = 0; i < list.length; i++) {
+                    	var item=list[i];
+                    	var statusHtml="";//0-已支付;1-待支付;2-上车支付;3-有退款;4-已关闭;--已完成
+                    	if(item.orderStatusInt==0){
+                    		statusHtml="<span class='status status-green' >"+item.orderStatus+"</span>";
+                    	}else if(item.orderStatusInt==1){
+                    		statusHtml="<span class='status status-orange' >"+item.orderStatus+"</span>";
+                    	}else if(item.orderStatusInt==2){
+                    		statusHtml="<span class='status status-orange' >"+item.orderStatus+"</span>";
+                    	}else if(item.orderStatusInt==3){
+                    		statusHtml="<span class='status status-primary' >"+item.orderStatus+"</span>";
+                    	}else if(item.orderStatusInt==4){
+                    		statusHtml="<span class='status status-gray' >"+item.orderStatus+"</span>";
+                    	}else{
+                    		statusHtml="<span class='status status-green' >"+item.orderStatus+"</span>";
+                    	}
+                    	if(item.isRefundFlag !=0){
+                        	if(item.isRefundFlag==1){
+                        		statusHtml="<span class='status status-primary' >退票中</span>";
+                            }else if(item.isRefundFlag==2){
+                            	statusHtml="<span class='status status-primary' >部分退票</span>";
+                            }else if(item.isRefundFlag==3){
+                            	statusHtml="<span class='status status-primary' >全部退票</span>";
+                            }
+                        }
+                    	
+                    	/* strHtml += 
+                    	"<div id=template onclick=\"orderDetail('"+item.orderNo+"')\"  class=item >"
+                        +"<div class='head'>"
+                            +"<div class='date'>下单时间："+item.createTimeStr+"</div>"
+                            +statusHtml
+                        +"</div>"
+                        +"<div class='main'>"
+                            +"<div class='info'>"
+                                +"<div class='info-item time'>"+item.boardingTime+"</div>"
+                                +"<div class='info-item start'>"+item.departTitle+"</div>"
+                                +"<div class='info-item end'>"+item.arriveTitle+"</div>"
+                            +"</div>"
+                            +"<div class='mark'>已付：¥<b>"+item.payPrice+"</b></div>"
+                        +"</div>"
+                      +"</div>"; */
+                      var totalStyle = '';
+                      if(item.orderType == 4){
+                    	  totalStyle = ' <span class="text-gray">（共' + item.numbers +'张）</span>';
+                      }else if(item.orderType == 7){
+                    	  totalStyle = ' <span class="text-gray">（共' + item.days +'天）</span>';
+                      }
+                      
+                      strHtml += '<div class="order-item" onclick="orderDetail(\''+item.orderNo+'\''+ ',\'' + item.orderType + '\',this)">' +
+						'<div class="head">' +
+							'<span class="text-gray">下单时间：' + item.createTimeStr + '</span>' +
+							statusHtml +
+						'</div>' +
+						'<div class="content">' +
+							'<div class="time">' + item.boardingTime + totalStyle + '</div>' +
+							'<div class="row">' +
+								'<div class="address">' +
+									'<span class="start">' + item.departTitle + '</span>' +
+									'<span class="end">' + item.arriveTitle + '</span>' +
+								'</div>';
+						if(item.orderStatusInt !=1 && item.orderStatusInt != 2 && item.orderStatusInt != 4){
+							strHtml += '<div class="price"><span class="text-gray"></span><i>&yen;</i>' + item.payPrice + '</div>';
+						}
+						strHtml +=	'</div></div></div>';
+                    }
+                }
+                	
+                $('#order-list').append(strHtml);
+                _options.number++;
+            	_options.flag = false;
+                //最后一页销毁加载器
+                var pageCount = 1;
+                if(totalCount%pageSize == 0){
+                    pageCount = totalCount/pageSize
+                }else{
+                	pageCount = totalCount/pageSize + 1;
+                }                
+                if(_options.number < pageCount){
+                	if(list.length<5){
+                		$(document.body).rollPage('destroy');   // 销毁事件
+                	}
+                }else{
+                	$(document.body).rollPage('destroy');   // 销毁事件
+                }
+                
+            }
+        },'json');
+        
+    }
+    </script>
+</body>
+</html>

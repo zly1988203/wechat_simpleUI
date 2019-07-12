@@ -1,0 +1,127 @@
+.driver-foot {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 500;
+}
+
+.driver-foot .btn-group {
+    position: relative;
+    padding-right: .15rem
+}
+
+.driver-foot .btn-group .btn {
+    font-size: .34rem;
+    margin-left: .07rem;
+    font-family: PingFangSC-Regular;
+    font-size: 0.28rem;
+    letter-spacing: 0;
+    text-align: center;
+}
+
+ .btn-default{
+    color: #AAAAAA;
+    background: #FFFFFF;
+    box-shadow: 0 0 0.2rem 0 rgba(227,227,227,0.40);
+    border-radius: 0.06rem;
+}
+.btn-primary{
+    color: #fff;
+    background: #6392FE;
+    box-shadow: 0 0 0.2rem 0 rgba(61,59,238,0.31);
+    border-radius: 0.06rem;
+}
+
+.driver-foot .btn-group .btn:first-child {
+    margin-left: 0
+}
+
+.driver-foot .link {
+    text-align: center;
+    font-size: .28rem;
+    color: #999
+}
+
+.driver-foot .link:before {
+    content: "";
+    display: inline-block;
+    vertical-align: middle;
+    width: .33rem;
+    height: .34rem;
+    margin-right: .1rem;
+    background: url(../../images/rent/icon_earphone.png) no-repeat 50%;
+    background-size: 100% 100%
+}
+
+.driver-foot .link span {
+    vertical-align: middle
+}
+
+.driver-foot .link span.contacts-help:before {
+    content: "";
+    display: inline-block;
+    vertical-align: text-bottom;
+    width: .35rem;
+    height: .35rem;
+    background: url(../../images/rent/emergency_help.png) no-repeat 50%;
+    background-size: 100% 100%
+}
+
+.more-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    background: hsla(0, 0%, 40%, .3)
+}
+
+.more-modal ul {
+    position: absolute;
+    bottom: 1.51rem;
+    left: .35rem;
+    right: .35rem;
+    background: #fff;
+    box-shadow: 0 .01rem .02rem 0 hsla(0, 0%, 100%, .2), 0 0 .1rem 0 rgba(0, 0, 0, .1);
+    border-radius: .2rem;
+    overflow: hidden
+}
+
+.more-modal ul li {
+    position: relative;
+    display: block;
+    height: .94rem;
+    line-height: .94rem;
+    padding: 0 .1rem;
+    text-align: center;
+    overflow: hidden;
+    border-bottom: .01rem solid #eaeaea;
+    font-size: .38rem;
+    color: #666
+}
+
+.more-modal ul li:last-child {
+    border-bottom: 0 none
+}
+
+.more-modal ul li.active {
+    background: #6392fe;
+    color: #fff
+}
+
+.more-modal ul li:after {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    background: hsla(0, 0%, 40%, .1)
+}
+
+.more-modal ul li:active:after {
+    content: ""
+}

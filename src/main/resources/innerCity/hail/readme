@@ -1,0 +1,9 @@
+记录时间：2018-11-22 10:58
+记录人：Reyn.zhao
+
+主题：新版本的城际约租车 --- 分支版本
+说明：独立部署城际约租车 中交城际.
+        所有的接口调用在之前新增 /hail 一级
+        例如 ：
+        旧 var url = SERVER_URL_PREFIX + '/innerCity/optimize/getLineAreaByLocation';
+        新 var url = SERVER_URL_PREFIX + '/hail/innerCity/optimize/getLineAreaByLocation';

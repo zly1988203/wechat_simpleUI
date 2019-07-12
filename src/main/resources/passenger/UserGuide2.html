@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>使用说明</title>
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="email=no">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <link href="/res/style/simpleui.min.css?v=20170704" rel="stylesheet" type="text/css">
+    <link href="/res/style/my/config.css?v=20170704" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<ul class="sui-list sui-list-link">
+    <li data-href="/passenger/costRule.html" style="display:none">
+        <div class="sui-cell-icons">
+            <span class="sui-cell-icon icon-billing"></span> 计费规则
+        </div>
+    </li>
+    <li data-href="/passenger/interRule.html" style="display:none" id="interCityRule">
+        <div class="sui-cell-icons">
+            <span class="sui-cell-icon icon-rent"></span> <i id="interCityRuleTxt">城际约租车规则</i>
+        </div>
+    </li>
+    <li data-href="/passenger/ticketRule.html" style="display:none" id="ticketRule">
+        <div class="sui-cell-icons">
+            <span class="sui-cell-icon" style="background-image:url(/res/images/my/icon-ticket.png);"></span> 购票/退票规则
+        </div>
+    </li>
+</ul>
+
+<ul class="sui-list sui-list-link">
+    <li data-href="/passenger/legalClause.html">
+        <div class="sui-cell-icons">
+            <span class="sui-cell-icon icon-law"></span> 法律条款及隐私条款
+        </div>
+    </li>
+    <li data-href="/passenger/UserGuide.html" style="display:none">
+        <div class="sui-cell-icons">
+            <span class="sui-cell-icon icon-guide"></span> 用户指南
+        </div>
+    </li>
+</ul>
+
+<script src="/js/zepto.min.js?v=20170704"></script>
+<script src="/js/simpleui.min.js?v=20170704"></script>
+<script src="/js/common.min.js?v=20170704"></script>
+<script>
+    //查询此车企存在的业务类型
+    getBusinessTypes();
+    function getBusinessTypes(){
+        $.ajax({
+            type: 'POST',
+            url: '/getBusinessTypes',
+            data: {},
+            dataType:  'json',
+            success: function(data){
+                if(data.data.hasBus ==1 || data.data.hasCommute ==1){
+                    $('#ticketRule').show()
+                }
+                if(data.data.hasInterCity ==1){
+                    if(data.data.interCityTxt!=undefined){
+                        $('#interCityRuleTxt').html(data.data.interCityTxt+'规则');
+                    }
+                    $('#interCityRule').show()
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

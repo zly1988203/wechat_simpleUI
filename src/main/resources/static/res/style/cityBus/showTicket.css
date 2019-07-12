@@ -1,0 +1,204 @@
+.header-tips {
+    background: #EC5A6C;
+    font-size: .28rem;
+    color: #fff;
+    letter-spacing: 0;
+    text-align: center;
+    padding: .1rem 0
+}
+
+.order-container{
+    padding-top: 0.2rem;
+}
+
+.order-content {
+    margin: 0 .2rem;
+    background: #fff;
+    box-shadow: 0 0 .2rem 0 rgba(0,0,0,.1);
+    border-radius: .06rem
+}
+
+.order-content .order-item .order-top {
+    margin: 0 .2rem;
+    padding: .2rem 0;
+    border-bottom: 1px dashed #e8e8e8
+}
+
+.order-content .order-item .order-top .head {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+    font-size: .28rem;
+    color: #333
+}
+.order-content .order-item .order-top .head .time{
+    font-size: 0.32rem;
+    font-weight: bold;
+}
+
+.order-content .order-item .order-top .head .line-name {
+    margin-left: .2rem;
+    color: #ccc
+}
+
+.order-content .order-item .order-top .head .license-plate {
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    flex: 1;
+    text-align: right;
+}
+
+.order-content .order-item .order-top .station {
+    margin-top: .2rem
+}
+
+.order-content .order-item .order-top .station .station-item:before {
+    width: .22rem;
+    height: .22rem;
+    border-radius: .22rem;
+    top: auto;
+}
+
+.order-content .order-item .order-top .station .station-item:first-child:before {
+    background: url(../../images/busCity/icon_up.png) 50% no-repeat;
+    background-size: 100% 100%
+}
+
+.order-content .order-item .order-top .station .station-item:first-child:after {
+    border: none;
+    border-left: 1px dashed #d3d2db;
+    left: .11rem;
+    bottom: -0.13rem;
+}
+
+.order-content .order-item .order-top .station .station-item:last-child:before {
+    background: url(../../images/busCity/icon_down.png) 50% no-repeat;
+    background-size: 100% 100%
+}
+
+.order-content .order-item .checkanimat {
+    border-radius: inherit
+}
+
+.order-content .order-item .order-bottom .slider-box {
+    position: relative;
+    height: 3.44rem
+}
+
+.order-content .order-item .order-bottom .slider-box .ticket-list.slider {
+    position: relative;
+    height: 100%
+}
+
+.order-content .order-item .order-bottom .slider-box .ticket-list.slider ul.slider-main {
+    height: 100%;
+    overflow: hidden;
+    position: absolute;
+    left: 0;
+    top: 0;
+    -webkit-transition: all .2s;
+    transition: all .2s
+}
+
+.order-content .order-item .order-bottom .slider-box .ticket-list.slider ul.slider-main li {
+    display: inline-block;
+    float: left;
+    padding-top: .2rem;
+    font-size: .28rem;
+    color: #999;
+    text-align: center;
+    position: relative;
+}
+
+.order-content .order-item .order-bottom .slider-box .ticket-list.slider ul.slider-main li .check-in-code {
+    font-size: .64rem;
+    color: #333;
+    font-family: PingFangSC-Medium;
+    font-weight: bold;
+}
+
+.order-content .order-item .order-bottom .slider-box .ticket-list.slider ul.slider-main li .ticket-info {
+    padding-left: 25.1%;
+    text-align: left;
+    margin-top: .2rem
+}
+
+.order-content .order-item .order-bottom .slider-box .ticket-list.slider ul.slider-main li .status {
+    width: 1.212rem;
+    height: 1.212rem;
+    position: absolute;
+    top: .1rem;
+    right: .1rem;
+    z-index: 99
+}
+
+.order-content .order-item .order-bottom .slider-box .ticket-list.slider ul.slider-main li .status.checked {
+    background: url(../../images/busCity/icon_checked.png) 50% no-repeat;
+    background-size: 100% 100%
+}
+
+.order-content .order-item .order-bottom .slider-box .ticket-list.slider ul.slider-main li .status.refunded {
+    background: url(../../images/busCity/icon_refunded.png) 50% no-repeat;
+    background-size: 100% 100%
+}
+
+.order-content .order-item .order-bottom .slider-box .ticket-list.slider ul.slider-main li .status.toride {
+    background: url(../../images/busCity/icon_toride.png) 50% no-repeat;
+    background-size: 100% 100%
+}
+
+.order-content .order-item .order-bottom .slider-box .list-index {
+    position: absolute;
+    text-align: center;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    bottom: .1rem
+}
+
+.order-content .order-item .order-bottom .slider-box .list-index span {
+    display: inline-block;
+    width: .1rem;
+    height: .1rem;
+    background: #eee;
+    margin-left: .1rem;
+    border-radius: .1rem
+}
+
+.order-content .order-item .order-bottom .slider-box .list-index span:first-child {
+    margin-left: 0
+}
+
+.order-content .order-item .order-bottom .slider-box .list-index span.active {
+    background: #6392fe
+}
+
+.clearfloat:after {
+    content: "";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    height: 0
+}
+
+.clearfloat {
+    zoom: 1
+}
+
+.station .station-item{
+    font-size: 0.28rem;
+    color: #333333;
+    align-items: center;
+}
+
+footer{
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+.handle-list{position:fixed;bottom:0;padding:.2rem;z-index:10}
+.handle-list .handle{background:#fff;box-shadow:0 0 .2rem 0 hsla(0,0%,89%,.4);border-radius:.06rem;font-size:.32rem;color:#aaa;letter-spacing:0;text-align:center;padding:.15rem .4rem}
+.handle-list .handle:active{background:#ccc}

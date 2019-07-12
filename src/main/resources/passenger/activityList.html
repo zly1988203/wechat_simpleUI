@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>活动推荐</title>
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="email=no">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+	<link href="/res/style/simpleui.min.css?v=20170929" rel="stylesheet" type="text/css">
+	<link href="/res/style/base/vectors.2.css?v=20170929" rel="stylesheet" type="text/css">
+	<link href="/res/style/base/progressbar.css?v=20170929" rel="stylesheet" type="text/css">
+	<link href="/res/style/activity/list.css?v=20170929" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+    <div class="activity-list">
+      <div id="datalist">
+         <ul></ul>
+       </div>
+    </div>
+
+	<div id="status-page" style="display:none">
+		<img src="/res/images/common/icon_nonentity.png"
+			style="width: 3.43rem;">
+		<p>当前没有可参与活动</p>
+	</div>
+
+	<script type="text/javascript" src="/js/commonJs.js?v=20170929"></script>
+    <script type="text/javascript" src="/js/commonFoot.js?v=20170929"></script>
+    <script src="/js/vectors.min.js?v=20170929"></script>
+	
+	<script>
+		// 分页选项
+		var _options = {
+			number : 1, // 页码
+			flag : false
+		// 事件锁
+		};
+
+		$(function() {
+			requestServer();
+			$(document.body).rollPage('load', function() {
+				// 事件锁, 防止频繁触发事件
+				if (_options.flag)
+					return;
+				_options.flag = true;
+				// 页面滚动到底部请求下一页
+				requestServer();
+			});
+		});
+
+		// 请求服务器
+		var requestServer = function() {
+
+			// 显示分页指示器
+			$('#datalist').loading();
+
+			//api url
+			var urlStr = SERVER_URL_PREFIX + '/activityRecom/activityList';
+			//current page param
+			var dataObj = {
+				page : _options.number,
+				pageSize : PAGE_SIZE
+			};
+			//merge page param and common param,generate request param
+ 			dataObj = genReqData(urlStr, dataObj);
+			
+			$.ajax({
+				type : 'POST',
+				url : urlStr,
+				data : dataObj,
+				dataType : "json",
+				success : function(data) {
+			
+					if (data.code == 0) { //请求成功
+			
+						var resContent = data.data;
+						var resArray = resContent.list.data;
+			
+						// 渲染数据
+						var strHtml = '';
+						var array = [];
+			
+						if (resArray.length > 0) {
+							for (var i = 0; i < resArray.length; i++) {
+								var content = resArray[i];
+								var activityDetailUrl = content.url;
+			
+								var img = content.imgUrl;
+			
+								array.push('<li>');
+								array.push('<a href="'+activityDetailUrl+'">');
+								array.push('<img src="'+img+'">');
+								array.push('</a>');
+								array.push('</li>');
+							}
+						}else{
+							$(".activity-list").hide();
+							 $("#status-page").show();
+						}
+			
+						$('#datalist ul').append(array.join(""));
+			
+						// 销毁分页指示器的逻辑：
+						// 1.假定最大页码是5页, 已经到第5页，移除
+						// 2.假定数据不满一页，没有滚动条时候，移除
+						if (_options.number >= resContent.pageCount) {
+							$(document.body).rollPage('destroy'); // 销毁事件
+							$('#datalist').hideLoading(); // 隐藏分页指示器
+							return;
+						}
+			
+						_options.number++; // 页码自增
+						_options.flag = false; // 数据渲染完成，事件解锁
+					}
+				},
+			});
+
+		}
+	</script>
+</body>
+</html>

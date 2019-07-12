@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>员工排行榜</title>
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="email=no">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <link href="/res/style/simpleui.min.css" rel="stylesheet" type="text/css">
+    <link href="/res/style/common.css" rel="stylesheet" type="text/css">
+    <link href="/res/style/staff-ranklist.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="/js/commonFoot.js"></script>
+</head>
+
+<body>
+	<div class="head"></div>
+	<div class="wrap">
+    <ul class="tab">
+        <li class="active" data-type="1"><span>今日</span></li>
+        <li data-type="2"><span>昨日</span></li>
+        <li data-type="4"><span>本周</span></li>
+        <li data-type="5"><span>本月</span></li>
+        <li data-type="3"><span>累计</span></li>
+    </ul>
+
+        <div class="statistics">
+            共有XX名员工
+        </div>
+        <div id="datalist" class="data-tbale">
+            <table>
+                <thead>
+                <tr>
+                    <th width="18%">名次</th>
+                    <th width="20%">姓名</th>
+                    <th><span id="reg">今日拉新注册</span></th>
+                <th><span id="att">今日拉新关注</span></th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+	</div>
+	
+	<div class="foot-hold"></div>
+	<div class="btn-bar">
+        <ul>
+            <li><button class="reset" type="button" id="inviteActivityRule">员工拉新活动规则</button></li>
+            <li><button class="finish" type="button">立即邀请好友</button></li>
+        </ul>
+    </div>
+    
+    <!--分享-->
+	<div class="share" style="display:none">
+	    <div class="arrow"></div>
+	    <div class="tip">
+        点击右上角“发送给好友/分享到朋友圈”<br/>
+        即可邀请朋友加入
+        </div>
+	</div>
+	
+	<script type="text/javascript" src="/js/commonJs.js"></script>
+	
+	<script type="text/javascript">
+    //分享
+    $(function() {
+        $('.finish').on('click', function() {
+        	window.location.href = CURRENT_SERVER + "/passenger/invite.html";
+          //  $('.share').show();
+        });
+        $('.share').on('click', function() {
+            $(this).hide();
+        })
+    });
+        
+    // 分页选项
+    var _options = {
+        number: 0,  // 页码
+        flag: false // 事件锁
+    };
+    
+    var employeeCount = 0;
+        
+    $(function() {
+    	//backtoUrl('/passenger/my/my.html');
+    	
+        //切换tab
+        $('.tab li').on('click', function() {
+            $('.tab .active').removeClass('active');
+            $(this).addClass('active');
+            var type = $(this).data('type');
+            employeeCount = 0;
+            if( type == 1 ){
+                $("#reg").text("今日拉新注册");
+                $("#att").text("今日拉新关注");
+            }else if(type == 2 ){
+                $("#reg").text("昨日拉新注册");
+                $("#att").text("昨日拉新关注");
+            }else if( type == 3 ){
+                $("#reg").text("累计拉新注册");
+                $("#att").text("累计拉新关注");
+            }else if( type == 4 ){
+                $("#reg").text("本周拉新注册");
+                $("#att").text("本周拉新关注");
+            }else if( type == 5 ){
+                $("#reg").text("本月拉新注册");
+                $("#att").text("本月拉新关注");
+            }
+            //模拟请求
+            _options.number = 0;
+            $('#datalist tbody').html(''); //清空数据
+            //初始化
+            bindPageEvent();
+            requestServer();
+        });
+        
+        //初始化
+        bindPageEvent();
+        requestServer();
+    });
+        
+ 	// 绑定分页事件
+    function bindPageEvent() {
+        $(document.body).rollPage('destroy');
+        $('#datalist').hideLoading();
+        $(document.body).rollPage('load', function() {
+            // 页面滚动到底部请求下一页
+            requestServer();
+        });
+    }
+       
+    // 模拟数据请求
+    var requestServer = function() {
+    	// 事件锁, 防止频繁触发事件
+        if(_options.flag) return;
+    	_options.flag = true;
+        // 显示分页指示器
+        $('#datalist').loading();
+
+      //api url
+		var urlStr_user = SERVER_URL_PREFIX+"/Account/userType";
+		//current page param
+		var dataObj_user = {
+		};
+		//merge page param and common param,generate request param
+		dataObj_user = genReqData(urlStr_user, dataObj_user);
+    	var token=$.cookie('token');
+    	dataObj_user['token']=token;
+        $.post(urlStr_user, dataObj_user, function(result){
+            if(result && result.code == 0){
+            	isEmp = result.data.isEmp;
+            	if(isEmp=="1"){
+            		//api url
+            		var urlStr = SERVER_URL_PREFIX+"/v2/invite/getStaffRankList";
+            		//current page param
+            		var dataObj = {
+            			page : _options.number+1,
+                        pageSize : 20,
+                        type : $(".active").data('type'),
+            		};
+            		//merge page param and common param,generate request param
+            		dataObj = genReqData(urlStr, dataObj);
+            			
+                    $.post(urlStr, dataObj, function(result){
+                    	$('#datalist').hideLoading();
+                        _options.flag = false;   // 数据渲染完成，事件解锁
+                        if (result.code == 0) {
+                            var strHtml ='';
+                            var totalCount = result.data.totalCount;
+                            var list = result.data.data;
+                            var pageSize = result.data.pageSize;
+                            
+                            employeeCount = employeeCount+list.length;
+                            $(".statistics").html("共有"+employeeCount+"名员工");
+                            
+                            if (list.length <= 0) {
+                            	strHtml += '<tr><td colspan="100" class="not-data"><i class="fa fa-warning"></i> 暂无数据~！</td></tr>';
+                            	$(document.body).rollPage('destroy');   // 销毁事件
+                            	$('#datalist').hideLoading();
+                            } else {
+                                for(var i = 0; i < list.length; i++) {
+                                	var item=list[i];
+                                	var number = i + 1 + _options.number * 20;
+                                	strHtml += '<tr><td>' + number + '</td><td>'+item.name+'</td><td>'+item.register+'</td><td>'+item.attention+'</td></tr>';
+                                }
+                            }
+                            	
+                            $('#datalist tbody').append(strHtml);
+                            _options.number++;
+                            //最后一页销毁加载器
+                            var pageCount = 1;
+                            if(totalCount%pageSize == 0){
+                                pageCount = totalCount/pageSize
+                            }else{
+                            	pageCount = totalCount/pageSize + 1;
+                            }                
+                            if(_options.number < pageCount){
+                            	if(list.length<20){
+                            		$(document.body).rollPage('destroy');   // 销毁事件
+                            	}
+                            }else{
+                            	$(document.body).rollPage('destroy');   // 销毁事件
+                            }
+                            
+                        }
+                    },'json');
+            	}else{
+            		$('#datalist tbody').append("<tr><td colspan='4'>您的帐号不属于企业员工，无法查看本排行榜</td></tr>");
+					$(document.body).rollPage('destroy');   // 销毁事件
+                    $('#datalist').hideLoading();
+            	}
+            }
+        });
+        
+        $('#inviteActivityRule').on('click',function(){
+            location.href = 'inviteActivityRule.html';
+        });
+    }
+    </script>
+</body>
+</html>

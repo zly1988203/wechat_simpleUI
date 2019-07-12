@@ -1,0 +1,4 @@
+include "TSP_common"
+
+project(':TSP_common').projectDir = new File("../TSP_common")
+rootProject.name = 'TSP_passenger_wechat'

@@ -1,0 +1,171 @@
+#search-coupons .bg{
+    background: #F3F4F5 ;
+}
+
+#search-coupons .main{
+    margin: 0.2rem;
+    /*height: 100%;*/
+    /*overflow-y: scroll;*/
+    /*-webkit-overflow-scrolling: touch;*/
+}
+
+#search-coupons .header  {
+    width: 100%;
+    text-align: right;
+}
+
+#search-coupons .header .use-rule {
+    ont-family: PingFangSC-Regular;
+    font-size: 0.28rem;
+    color: #666666;
+    padding-left: 18px;
+    background: url(../../images/bus/icon_question_mark.png) 0 no-repeat;
+    background-size: 13px 13px;
+}
+
+#search-coupons .main .content{
+    /*padding-bottom: 1.66rem;*/
+}
+
+#search-coupons .main .content  .line{
+    overflow: hidden;
+    /*border: 1px solid #cccccc;*/
+    margin-bottom: 0.22rem;
+    -moz-box-flex:1;
+    -webkit-box-flex:1;
+    box-flex:1;
+    display: flex;
+}
+
+#search-coupons .main .content  .line b{
+    background: #ddd;
+    margin-top: 12px;
+    float: left;
+    width: 30%;
+    height: 1px;
+    margin-left: 0.1rem;
+    flex: 1;
+}
+
+#search-coupons .main .content  .line span{
+    width: 30%;
+    float: left;
+    text-align: center;
+    color: #CCCCCC;
+    flex: 1;
+}
+
+/*优惠券公共样式*/
+#search-coupons .main .content .coupon-list{
+    overflow: hidden;
+}
+
+#search-coupons .main .content .coupon-list .coupon{
+    display: -webkit-box;
+    /*border-left: 0.1rem solid #21cd61;*/
+    border-radius: 0.1rem;
+    background: #ffffff;
+    height: 2.12rem;
+    margin-bottom: 0.18rem;
+    box-shadow: 0 0 0.02rem 0 rgba(0, 0, 0, .1);
+    /*border-radius: .05rem .05rem .16rem .16rem;*/
+    color:#666666;
+}
+#search-coupons .main .content .coupon-list .coupon .coupon-righ .coupon-title{
+    font-size: 0.38rem;
+}
+#search-coupons .main .content .coupon-list .coupon .coupon-righ .coupon-time{
+    font-size: 0.28rem;
+    letter-spacing: 0;
+}
+#search-coupons .main .content .coupon-list .coupon .coupon-righ .coupon-mark{
+    font-size: 0.24rem;
+    color: #999999;
+    letter-spacing: 0;
+    margin-top: 0.15rem;
+    overflow: hidden;
+}
+#search-coupons .main .content .coupon-list .coupon .coupon-left{
+    margin-top: 0.45rem;
+    text-align: center;
+    width: 35%;
+}
+#search-coupons .main .content .coupon-list .coupon .coupon-left .coupon-sale{
+    font-size:0.56rem;
+    color: #FE6666;
+}
+
+/*左边特殊样式-颜色*/
+#search-coupons .main .content .coupon-list .color-green{
+    border-left: 0.1rem solid #21cd61;
+}
+#search-coupons .main .content .coupon-list .color-green .coupon-title{
+    color: #21cd61;
+}
+#search-coupons .main .content .coupon-list .color-green .coupon-time{
+    color: #21cd61;
+}
+/*左边特殊样式-颜色end*/
+
+#search-coupons .main .content .coupon-list .coupon .coupon-left .coupon-sale i{
+    font-size:0.3rem;
+}
+#search-coupons .main .content .coupon-list .coupon .coupon-left .coupon-des{
+    font-size: 0.28rem;
+    color: #999999;
+    letter-spacing: 0;
+}
+#search-coupons .main .content .coupon-list  .coupon-righ{
+    /*color: #F27D4A;*/
+    padding: 0.2rem;
+    width: 60%;
+    border-right: 1px dashed #2222;
+}
+
+/*不可用优惠券样式*/
+#search-coupons .main .content .coupon-list .valid-coupon{
+    display: -webkit-box;
+    border-radius: 0.1rem;
+    background: #ffffff;
+    height: 2.12rem;
+    margin-bottom: 0.18rem;
+    box-shadow: 0 0 0.02rem 0 rgba(0, 0, 0, .1);
+    /*border-radius: .05rem .05rem .16rem .16rem;*/
+    border-left: 0.1rem solid #999999;
+    color:#999999;
+}
+#search-coupons .main .content .coupon-list .valid-coupon .coupon-left .coupon-sale{
+    color: #999999;
+}
+#search-coupons .main .content .coupon-list .valid-coupon {
+    border-left: 0.1rem solid #999999;
+}
+#search-coupons .main .content .coupon-list .valid-coupon .coupon-righ .coupon-title{
+    color: #999999;
+}
+#search-coupons .main .content .coupon-list .valid-coupon .coupon-righ .coupon-time{
+    color: #999999;
+}
+/*不可用优惠券样式end*/
+
+.choose{
+    position: absolute;
+    right: -0.03rem;
+    width: 0.8rem;
+    height: 0.81rem;
+}
+
+/*不使用优惠券 按钮样式*/
+.btn-box{
+    position: absolute;
+    top: 0.24rem;
+    left: 0.22rem;
+    font-size: 0.28rem;
+    color: #666;
+}
+
+.btn-box .btn-nouse{
+    background: url(../../images/coupons/icon-nouse.png) 0 no-repeat;
+    background-size: 0.32rem 0.32rem;
+    padding-left: 0.4rem;
+}

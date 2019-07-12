@@ -1,0 +1,372 @@
+body {
+	background: #f3f4f5
+}
+
+ul li {
+	margin-top: .22rem;
+	background: #fff;
+	padding: .22rem;
+	box-shadow: 0 .02rem .02rem 0 rgba(0,0,0,.05)
+}
+
+.pre {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-box-pack: justify;
+	-webkit-justify-content: space-between;
+	justify-content: space-between;
+}
+
+.pre input {
+	border: none;
+	text-align: right;
+	color: #999
+}
+
+.pre input::-webkit-input-placeholder {
+	color: #ccc
+}
+
+.pre input::placeholder {
+	color: #ccc
+}
+
+.top-title {
+	line-height: .45rem;
+	font-size: .32rem;
+	color: #333
+}
+
+.ticket {
+	font-size: .28rem;
+	color: #333;
+	letter-spacing: 0;
+	border-top: .01rem solid #eaeaea;
+	padding: .22rem 0
+}
+
+.ticket:first-child {
+	border-top: 0;
+	padding-top: 0
+}
+
+.ticket:last-child {
+	padding-bottom: 0
+}
+
+.ticket div {
+	line-height: .4rem
+}
+
+.ticket .price {
+	color: #fe6666
+}
+
+.ticket .ticket-num {
+	font-size: .24rem;
+	color: #002a2a;
+	line-height: .33rem
+}
+
+.passenger-info {
+	font-size: .32rem;
+	color: #333
+}
+
+.passenger-info .passenger-header {
+	line-height: .45rem;
+	padding: .22rem 0
+}
+
+.passenger-info .passenger-header span {
+	font-size: .24rem;
+	color: #3f3f3f
+}
+
+.passenger-info .passenger-header span em {
+	color: #fe6666
+}
+
+.passenger-info .info {
+	line-height: .45rem;
+	border-top: .01rem solid #f1f1f1;
+	padding: .4rem 0;
+	position: relative
+}
+
+.passenger-info .info input {
+	margin-right: .6rem;
+	width: 5rem;
+}
+
+.passenger-info .info i {
+	width: .4rem;
+	height: .4rem;
+	background: url(../../images/sameSale/icon-del.png) no-repeat 50%;
+	background-size: 100% 100%;
+	position: absolute;
+	right: 0
+}
+
+.passenger-info .info .name-clear {
+	background: url(../../images/sameSale/icon-del.png) no-repeat 50%;
+	background-size: 100% 100%
+}
+
+.pay {
+	line-height: .45rem;
+	border-top: .01rem solid #f1f1f1;
+	padding: .4rem .22rem;
+}
+
+.pay,.pay .pay-way {
+	font-size: .32rem;
+	color: #333
+}
+
+.pay .pay-way {
+	position: relative;
+	background: url(../../images/sameSale/wechat.png) no-repeat 0;
+	padding-left: .72rem;
+	background-size: .5rem .5rem
+}
+
+.pay .pay-way em {
+	font-size: .24rem;
+	color: #999
+}
+
+.pay .pay-icon input {
+	width: .5rem;
+	height: .5rem;
+	border: 0;
+	-webkit-appearance: none;
+	appearance: none;
+	outline: 0;
+	vertical-align: middle;
+	background: 0 0;
+	position: relative
+}
+
+.pay .pay-icon input:before {
+	content: "";
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	left: 0;
+	top: 0;
+	background: url(../../images/sameSale/icon-choosed.png) no-repeat 50%;
+	background-size: 100% 100%
+}
+
+.warm-prompt {
+	color: #999;
+	padding: .22rem;
+	font-size: .24rem;
+	margin-top: .34rem;
+	margin-bottom: 1.6rem;
+}
+
+.warm-prompt .head {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+	padding-bottom: .18rem
+}
+
+.warm-prompt .head h6 {
+	-webkit-box-flex: 1;
+	-webkit-flex: 1;
+	flex: 1;
+	color: #666
+}
+
+.warm-prompt .head .ticket-rule {
+	color: #6392fe
+}
+
+.pay-btn {
+	height: 1.44rem;
+	background: #fff;
+	box-shadow: inset 0 1px 0 0 rgba(0,0,0,.1);
+	text-align: center;
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	z-index: 9
+}
+
+.pay-btn .confirm {
+	margin: .22rem;
+	background: #6392fe;
+	border-radius: 1rem;
+	height: 1rem;
+	line-height: 1rem;
+	font-size: .38rem;
+	color: #fff
+}
+
+.ticket-rule-pop {
+	display: none;
+	font-size: .28rem;
+	color: #333;
+	background: #fff;
+	box-shadow: 0 0 .1rem 0 rgba(0,0,0,.1);
+	position: fixed;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	top: 3rem;
+	z-index: 50;
+	overflow-y:scroll;
+	overflow-x:hidden;
+}
+
+.ticket-rule-pop .rule-header {
+	line-height: .4rem;
+	text-align: center;
+	padding: .22rem 0;
+	border-bottom: .01rem solid #f1f1f1
+}
+
+.ticket-rule-pop .rule-header i {
+	width: .424rem;
+	height: .424rem;
+	background: url(../../images/sameSale/icon-close.png) no-repeat 50%;
+	background-size: 60% 60%;
+	position: absolute;
+	right: .22rem
+}
+
+.ticket-rule-pop p {
+	line-height: .4rem;
+	padding-top: .1rem
+}
+
+.ticket-rule-pop p:first-child {
+	padding-top: 0
+}
+
+.ticket-rule-pop .name {
+	font-size: .32rem;
+	padding: .1rem .22rem;
+	border-top: .01rem solid #f1f1f1;
+	border-bottom: .01rem solid #f1f1f1
+}
+
+.ticket-rule-pop .ticket-name {
+	padding: .22rem
+}
+.ticket-rule-pop .ticket-name .scenic-name{
+	font-size: .32rem;
+	padding-bottom: .1rem;
+}
+.ticket-rule-pop .ticket-name .tips {
+	width: .96rem;
+	height: .36rem;
+	background: rgba(99,146,254,.3);
+	border: .01rem solid #6392fe;
+	border-radius: .1rem;
+	font-size: .2rem;
+	color: #6392fe;
+	text-align: center;
+	padding: .04rem .08rem
+}
+
+.ticket-rule-pop .introduce div {
+	padding: .22rem
+}
+
+.popup-overlay {
+	display: none;
+	position: fixed;
+	background: #000;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 1;
+	-moz-opacity: .3;
+	opacity: .3;
+	filter: alpha(opacity=30)
+}
+
+#carryingChildren{
+	display: flex;
+	-webkit-box-align: center;
+	-webkit-align-items: center;
+	align-items: center;
+	padding: .4rem .22rem;
+	background: #fff;
+	box-shadow: 0 0.02rem 0.02rem 0 rgba(0,0,0,.05);
+	margin-top: .22rem;
+}
+
+
+#carryingChildren  .ticket-info {
+	-webkit-box-flex: 1;
+	-webkit-flex: 1;
+	flex: 1;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-box-align: baseline;
+	-webkit-align-items: baseline;
+	align-items: baseline
+}
+
+#carryingChildren  .ticket-type {
+	font-size: .32rem;
+	color: #333
+}
+#carryingChildren  .ticket-type span{
+	font-size: .24rem;
+	color: #fe6666;
+}
+
+#carryingChildren .ticket-amount {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-box-align: center;
+	-webkit-align-items: center;
+	align-items: center
+}
+
+#carryingChildren .ticket-amount .amount {
+	font-size: .38rem;
+	text-align: center;
+	width: .5rem;
+	height: .5rem;
+	line-height: .5rem;
+	border-radius: 100%;
+	margin: 0 .3rem
+}
+
+#carryingChildren .ticket-amount .amount input {
+	border: none;
+	width: 100%;
+	height: 100%;
+	background: transparent;
+	font-size: .38rem;
+	text-align: center
+}
+
+#carryingChildren .ticket-amount i {
+	display: block;
+	color: #999;
+	width: .5rem;
+	height: .5rem
+}
+
+#carryingChildren .ticket-amount .less {
+	background: url(../../images/sameSale/icon-reduce.png) 50% no-repeat;
+	background-size: 100% 100%
+}
+
+#carryingChildren .ticket-amount .more {
+	background: url(../../images/sameSale/icon-add.png) 50% no-repeat;
+	background-size: 100% 100%
+}

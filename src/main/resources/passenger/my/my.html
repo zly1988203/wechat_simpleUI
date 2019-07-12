@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>我的</title>
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="email=no">
+    <meta HTTP-EQUIV="Pragma" CONTENT="no-cache"> 
+	<meta HTTP-EQUIV="Cache-Control" CONTENT="no-cache"> 
+	<meta HTTP-EQUIV="Expires" CONTENT="0">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <link href="/res/style/simpleui.min.css" rel="stylesheet" type="text/css">
+    <link href="/res/style/common.css" rel="stylesheet" type="text/css">
+    <link href="/res/style/taxi/my.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+	<div class="head" data-url="myinfo.html">
+        <div class="avatar" style="background-image:url(/res/images/avatar_user.png)"></div>
+        <div class="mobile"></div>
+    </div>
+    <ul class="sui-list sui-list-link sui-border-b">
+    </ul>
+
+	<script type="text/javascript" src="/js/commonJs.js?v=20170918"></script>
+	<script type="text/javascript" src="/js/commonFoot.js"></script>
+	<script>
+		var providerId=$.cookie("providerId");
+		var operatorId=$.cookie("operatorId");
+		var adUrl="<script type='text/javascript' src='/adConfig.js?providerId="+providerId+"&positionCode=my-bottom&operatorId="+operatorId+"'><\/script>";
+		document.write(adUrl);
+	</script>
+	<script>
+	backtoUrl('/businessIndex');
+	$isEmp = "0";
+	
+    $(function() {
+    	
+    	//
+    	
+    	showContent();
+    	
+    	showUser();
+    	
+        $('[data-url]').on('click', function() {
+            location.href = $(this).data('url');
+        });
+    });
+    
+	//显示用户
+    function showUser(){
+		
+    	//api url
+		var urlStr = SERVER_URL_PREFIX+"/Account/queryAccount";
+		//current page param
+		var dataObj = {
+		};
+		//merge page param and common param,generate request param
+		dataObj = genReqData(urlStr, dataObj);
+    	
+        $.post(urlStr, dataObj, function(result){
+            if(result && result.code == 0){
+            	var mobile = result.data.mobile;
+            	var nickName = result.data.nickName;
+            	isEmp = result.isEmp;
+            	
+            	if(!isEmpty(result.data.avatar)){
+            		$('.avatar').css("background-image","url("+result.data.avatarUrl+")");
+            	}
+            	
+            	if(isEmpty(nickName)){
+	            	$('.mobile').html(mobile+'，您好');
+            	}else{
+					$('.mobile').html(nickName+'，您好');          		
+            	}
+            }else{
+            	window.location.href="/index";
+            }
+	    }, 'json');
+    }
+	
+	function toPassengerInfoList(){
+		var urlStr = SERVER_URL_PREFIX+'/bus/passengerContactInfo/toList';
+		var dataObj = genReqData(urlStr, dataObj);
+		window.location.href="/bus/passengerContactInfo/toList?token="+dataObj.token+"&sign="+dataObj.sign;
+	}
+	function toOrderPage(){
+		/* var urlStr = SERVER_URL_PREFIX+'/busline/busOrder/judgeBusiness';
+		var dataObj = genReqData(urlStr, dataObj);
+		window.location.href="/busline/busOrder/judgeBusiness?token="+dataObj.token+"&sign="+dataObj.sign; */
+		window.location.href="/busline/busOrder/judgeBusiness";
+	}
+	function ticketListPage(){
+		window.location.href="/busTicket/toTicketListPage";
+	}
+	
+  	//显示内容
+    function showContent(){
+		
+    	//api url
+		var urlStr = SERVER_URL_PREFIX+"/Account/userType";
+		//current page param
+		var dataObj = {
+		};
+		//merge page param and common param,generate request param
+		dataObj = genReqData(urlStr, dataObj);
+    	var token=$.cookie('token');
+    	dataObj['token']=token;
+        $.post(urlStr, dataObj, function(result){
+            if(result && result.code == 0){
+            	html='';
+            	 if(result.data.checkGift == 1){
+            		html += '<li data-url="http://osp.' + adDomain +'/wechat/activity/cdkeyVerify?providerId=' + result.data.providerId + '&token='+$.cookie('token')+'"><div class="sui-cell-icons"><span class="sui-cell-icon icon-ticket"></span>核销礼品</div></li>';
+            	} 
+            	if(result.data.hasBus == 1){
+            		html += '<li onclick="ticketListPage()"><div class="sui-cell-icons"><span class="sui-cell-icon icon-ticket"></span>车票</div></li>';
+            	}
+            	html += '<li onclick="toOrderPage()" ><div class="sui-cell-icons"><span class="sui-cell-icon icon-myorder"></span> 我的订单</div></li>';
+            	html += '<li data-url="/passenger/coupon.html?v=1.2"><div class="sui-cell-icons"><span class="sui-cell-icon icon-coupon"></span> 优惠券</div></li>';
+            	html += '<li data-url="/passenger/activityList.html"><div class="sui-cell-icons"><span class="sui-cell-icon icon-activity"></span> 活动</div></li>';
+           		html += '<li data-url="/passenger/invite.html"><div class="sui-cell-icons"><span class="sui-cell-icon icon-invite"></span> 邀请有礼</div></li>';
+           		if(result.data.hasBus == 1){
+       				html += '<li onclick="toPassengerInfoList()" ><div class="sui-cell-icons"><span class="sui-cell-icon icon-ranking"></span> 常用乘车人</div></li>';
+           		}
+       			if(result.data.isEmp == '1'){
+   					html += '<li data-url="http://osp.'+adDomain+'/wechat/employee_credit/index?providerId='+result.data.providerId+'&token='+$.cookie('token')+'"><div class="sui-cell-icons"><span class="sui-cell-icon icon-rank"></span> 员工排行榜</div></li>';
+       			}
+				html += '<li id="contact"><div class="sui-cell-icons"><span class="sui-cell-icon icon-contact"></span> 联系客服</div></li>';
+            	html += '<li data-url="/passenger/config.html?v=1.1"><div class="sui-cell-icons"><span class="sui-cell-icon icon-config"></span> 系统设置</div></li>';
+            	
+            	$('ul').html(html);
+            	
+            	$('[data-url]').on('click', function() {
+                    location.href = $(this).data('url');
+                });
+            	
+                //联系客服
+                $('#contact').on('click', function() {
+                	$.dialog({
+                        text: '确定拨打客服电话吗？',
+                        title: '提示',
+                        buttons: [{
+                            text: '取消',
+                        }, {
+                            text: '确定',
+                            onClick: function() {
+                         	   
+                         	var urlDetail = SERVER_URL_PREFIX + '/Config/commonConfig';
+                        		var dataDetail = {
+                        			tripNo: '${tripNo}'
+                        		};
+                        		dataDetail = genReqData(urlDetail, dataDetail);
+                        		
+                        		 $.ajax({
+                        	            type: 'POST',
+                        	            url: urlDetail,
+                        	            data: dataDetail,
+                        	            dataType:  'json',
+                        	            success: function(data){
+                        	            	if(data && data.code == 0){
+                        	            		window.location.href = 'tel:'+data.data.customerTel;                   	            		
+                        	            	}
+                        	            }
+                        	      	}); 
+                            }
+                        }]
+                    });
+                	
+                });
+            }
+            
+	    }, 'json');
+    }
+    </script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+@charset "utf-8";.search-form .search-date:before{width:.28rem;height:.28rem;background-image:url(../../images/bus/icon_time.png)}.search-form .search-date input{width:33%;text-align:right;margin-left:0;line-height:.45rem}.search-btn{margin:.63rem .22rem 0}#select-Citys .sui-popup-modal{background:#f3f4f5;padding-bottom:1.44rem;box-sizing:border-box}#select-Citys .sui-popup-modal .main{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-box-align:start;-webkit-align-items:flex-start;align-items:flex-start;margin-top: 1rem;}#select-Citys .sui-popup-modal .main .right{background: #FFFFFF;}#select-Citys .sui-popup-modal .main h4{padding-left: 0.2rem;background:#F3F4F5;font-size:.3rem;color:#BBBBBB;;padding:.2rem .1rem;font-weight:700;line-height:.42rem}#select-Citys .sui-popup-modal .main>*{border-left:1px solid #e6e6e6}#select-Citys .sui-popup-modal .main>:first-child{border-left:0 none}#select-Citys .sui-popup-modal .main>:nth-child(2){-webkit-box-flex:1;-webkit-flex:1;flex:1}#select-Citys .sui-popup-modal .main .station{overflow-y:auto}#select-Citys .sui-popup-modal .main .item{padding-bottom:.87rem}#select-Citys .sui-popup-modal .main .item li{display:block;padding:0 .22rem}#select-Citys .sui-popup-modal .main .item li.active{background: #6392FE;}#select-Citys .sui-popup-modal .main .item li.active a{font-size:.3rem;color:#ffffff;font-weight:700}#select-Citys .sui-popup-modal .main .item li:active{background:#f3f4f5}#select-Citys .sui-popup-modal .main .item li a{display:block;font-size:.3rem;line-height:.42rem;color:#4b4b4b;padding:.25rem .1rem;}#select-Citys .sui-popup-modal .main .item.fy-list-link a{position:relative;padding-right:30px;border-bottom: 1px solid #DFE2E6 ;}#select-Citys .sui-popup-modal .main .right .item{display:none}
+.search-bar .back {
+    width: 1rem;
+    height: .4rem;
+    line-height: .4rem;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    margin: auto 0;
+    color: #999;
+    font-size: .28rem;
+    border-left: .01rem solid #ccc;
+}
+#select-Citys .sui-popup-modal .main .right .item li.active{
+    background: #DFE2E6;
+}
+#select-Citys .wrapper .sui-cell-map h1 {
+    font-family: PingFangSC-Medium;
+    font-size: 0.28rem;
+    color: #666666;
+}
+#select-Citys .wrapper .sui-cell-map h2{
+    opacity: 0.5;
+    font-family: PingFangSC-Regular;
+    font-size: 0.24rem;
+    color: #666666;
+}

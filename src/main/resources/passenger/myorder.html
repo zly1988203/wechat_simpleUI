@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>订单</title>
+	<meta name="viewport"
+	content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+	<meta name="format-detection" content="telephone=no">
+	<meta name="format-detection" content="email=no">
+	<meta http-equiv="X-UA-Compatible" content="chrome=1" />
+	<link href="/res/style/simpleui.min.css" rel="stylesheet" type="text/css">
+	<link href="/res/style/my/myorder.css?v=20170704" rel="stylesheet" type="text/css">
+	<link href="/res/style/my/my-ticket.css?v=20170704" rel="stylesheet" type="text/css">
+	<script type="text/javascript" src="/js/commonJs.js?v=20170704"></script>
+	<script type="text/javascript" src="/js/commonFoot.js?v=20170704"></script>
+	<script>
+	    $(function() {
+	    	$.initLoading();
+	    })
+    </script>
+</head>
+
+<body>
+	<div class="tab">
+		<span id="busline" data-tab="1" data-href="/passenger/order-list.html" style="display:none">定制班线</span>
+		<span id="busticket" data-tab="4"  data-href="/passenger/busTicketOrder.html" style="display:none">汽车票</span>
+		<span id="interCity" data-tab="2" data-href="/passenger/innerCityOrder.html" style="display:none">城际约租车</span>
+		<span id="taxi" class="active" data-tab="3" style="display:none">出租车</span>
+	</div>
+	<div class="order-container" id="order-container">
+		<!--<div class="order-item">
+			<div class="head">
+				<span class="text-gray">下单时间：2017-04-27 15:34:28</span>
+				<span class="status status-orange">待支付</span>
+			</div>
+			<div class="content">
+				<div class="time">1月2日 8:36 <span class="text-gray">（共2张）</span></div>
+				<div class="row">
+					<div class="address">
+						<span class="start">深圳湾创业投资大厦</span>
+						<span class="end">深圳会展中心</span>
+					</div>
+					<div class="price"><span class="text-gray">实付</span><i>&yen;</i>6.5</div>
+				</div>
+			</div>
+		</div>-->
+		<div class="order-empty" style="display: none;">
+	        <div>
+	            <i></i>
+	            暂无订单数据
+		    </div>
+		</div>
+	</div>
+	
+	
+	<div id="template" style="display: none;">
+		<!-- <div class="order-item sui-border">
+			<ul class="head">
+				<li>orderType</li>
+				<li class="status status-green">orderStatus</li>
+			</ul>
+			<div class="time">createTime</div>
+			<div class="address" data-url="detailUrl">
+				<ul>
+					<li class="start">departTitle</li>
+					<li class="end">arriveTitle</li>
+				</ul>
+				<div class="arrow"></div>
+			</div>
+		</div> -->
+		<div class="order-item" data-url="detailUrl">
+			<div class="head">
+				<span class="text-gray">下单时间：createTime</span>
+				<span class="status status-orange">待支付</span>
+			</div>
+			<div class="content">
+				<!-- <div class="time">1月2日 8:36 <span class="text-gray">（共2张）</span></div> -->
+				<div class="row">
+					<div class="address">
+						<span class="start">departTitle</span>
+						<span class="end">arriveTitle</span>
+					</div>
+					<!-- <div class="price"><span class="text-gray">实付</span><i>&yen;</i>6.5</div> -->
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="datalist">
+		<ul class="sui-list"></ul>
+	</div>
+	<script>
+		var providerId=$.cookie("providerId");
+		var adUrl="<script type='text/javascript' src='/adConfig.js?providerId="+providerId+"&positionCode=my-bottom'><\/script>";
+		document.write(adUrl);
+	</script>
+	<script>
+	// 分页选项
+	var _options = {
+        number: 1,  // 页码
+        flag: false // 事件锁
+    };
+    var databackRequest={};
+	var callbackCount=0;
+	var isPage = 0;
+    $(function(){
+    	backtoUrl('/index');
+    	//查询此车企存在的业务类型
+    	getBusinessTypes();
+    	function getBusinessTypes(){
+    		$.ajax({
+       	        type: 'POST',
+       	        url: '/getBusinessTypes',
+       	        data: {},
+       	        dataType:  'json',
+       	        success: function(data){
+       	        	if(data.data.hasBus ==1 || data.data.hasCommute ==1){
+       	        		$('#busline').show()
+       	        	}
+       	        	if(data.data.hasInterCity ==1){
+       	        		$('#interCity').show()
+       	        	}
+       	        	if(data.data.hasTaxi ==1){
+       	        		$('#taxi').show()
+       	        	}
+       	        	if(data.data.hasBusTicket ==1){
+					$('#busticket').show()       	        	
+   	        		}
+       	        	if(data.data.num<=1){
+       	        		$('.active').removeClass('active');
+       	        	}
+       	        }
+       		});
+    	}
+    	getOtherList();
+		$(document.body).rollPage('load', function() {
+				// 事件锁, 防止频繁触发事件
+				if (_options.flag)
+					return;
+				_options.flag = true;
+				// 页面滚动到底部请求下一页
+				if(isPage == 1){
+					requestServer();
+				}
+			});
+		});
+    
+    var getOtherList = function() {
+    	var urlStr = SERVER_URL_PREFIX + '/Order/getOtherList';
+		var otherObj = {};
+		otherObj = genReqData(urlStr, otherObj);
+		
+		$.ajax({
+			type : 'POST',
+			url : urlStr,
+			data : otherObj,
+			dataType : "json",
+			success : function(data) {
+				var contentArray = data.data;
+				transInfoShow(contentArray);
+				
+				//isPage = 1;
+				requestServer();
+			}
+		});
+    }
+
+		//未出行，执行中，预约订单目前只会出现一条，所以加载数据只会增加已完成订单数量
+		var requestServer = function() {
+				            //不为0的时候加载
+					$('#datalist').loading();
+					// 显示分页指示器
+					//api url
+					var urlStr = SERVER_URL_PREFIX + '/Order/getCompleteList';
+					//current page param
+					var dataObj = {
+						page : _options.number,
+					};
+					//merge page param and common param,generate request param
+					dataObj = genReqData(urlStr, dataObj);
+					
+					$.ajax({
+						type : 'POST',
+						url : urlStr,
+						data : dataObj,
+						dataType : "json",
+						success : function(data) {
+								isPage = 1;
+								if(!databackRequest[_options.number]||databackRequest[_options.number]==null){
+									var pageCount = 1;
+									var contentArray = data.data.list;
+									transInfoShow(contentArray);
+			
+									$.hideLoading();
+									if (contentCount == 0) { //两个列表内容均为空
+										$(".order-empty").show();
+									} else {
+										pageCount = data.data.pageCount;
+										if (!pageCount)
+											pageCount = 1;
+									}
+									
+									// 销毁分页指示器的逻辑：
+									// 1.假定最大页码是5页, 已经到第5页，移除
+									// 2.假定数据不满一页，没有滚动条时候，移除
+									if (_options.number >= pageCount) {
+										$(document.body).rollPage('destroy'); // 销毁事件
+										$('#datalist').hideLoading(); // 隐藏分页指示器
+										return;
+									}
+			
+									_options.number++; // 页码自增
+									_options.flag = false; // 数据渲染完成，事件解锁
+									databackRequest[_options.number]=0;
+								}
+							},
+						});
+			
+			}
+
+
+		var contentCount = 0; //两次列表获取，如果都为空，跳转到空页面
+		function transInfoShow(contentArray) {
+			if (contentArray.length > 0) { //内容不为空
+				contentCount++;
+
+				$.each(
+					contentArray,
+					function(index, value) {
+//						$(value.target + 'Div').show()
+
+						var template = $(
+							"#template").html();
+						template = template
+						.replace(
+							'status status-green',
+							value.color);
+						template = template
+						.replace(
+							'orderStatus',
+							value.orderStatus);
+						template = template
+						.replace(
+							'orderType',
+							value.orderType);
+						template = template
+						.replace(
+							'createTime',
+							getLocalTime(value.createTime));
+						template = template
+						.replace(
+							'departTitle',
+							value.departTitle);
+						template = template
+						.replace(
+							'arriveTitle',
+							value.arriveTitle);
+
+						if (value.url) {
+							template = template
+							.replace(
+								'detailUrl',
+								value.url);
+						} else {
+							template = template
+							.replace(
+								'data-url="detailUrl',
+								'');
+						}
+
+						$('#order-container').append(
+							template);
+						$('[data-url]').off('click')
+						.on('click',function() {
+							location.href = $(this).data('url');
+						});
+					});
+			}
+		}
+	</script>
+</body>
+</html>

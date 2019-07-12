@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>紧急联系人</title>
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="email=no">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <link href="/res/style/simpleui.min.css" rel="stylesheet" type="text/css">
+    <link href="/res/style/my/contacts.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+    <div class="contact-tip">
+       为了保证您的行程安全<br/>
+       紧急联系人将用于自动分享行程及紧急求助功能 
+    </div>
+    
+    <ul id="contacts" class="sui-list sui-border-b">
+        <li class="add-contact sui-border-b">添加紧急联系人</li>
+    </ul>
+
+    <div class="btn-group">
+        <button class="primary">完成</button>
+    </div>
+    
+	<script type="text/javascript" src="/js/commonJs.js"></script>
+	<script>
+    $(function() {
+    	
+    	 function getQueryString(name) {
+      		  var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); // 匹配目标参数
+      		  var result = window.location.search.substr(1).match(reg); // 对querystring匹配目标参数
+      		  if (result != null) {
+      		    return decodeURIComponent(result[2]);
+      		  } else {
+      		    return null;
+      		  }
+      	}
+          
+        var mytype=getQueryString("type");
+        var orderNo=getQueryString("orderNo");
+        var addurl="contacts-add.html";
+        var buttomUrl="config.html?v=1.1";
+        
+        if(mytype!=null&&mytype!=''&&mytype=="online"){
+        	addurl+="?type=online&orderNo="+orderNo;
+        	buttomUrl="/bus/toOnlineCarOrderDetail?orderNo="+orderNo+"&token="+$.cookie('token');
+        }else if(mytype!=null&&mytype!=''&&mytype=="innerCity"){
+            addurl+="?type=innerCity&orderNo="+orderNo;
+            buttomUrl="/innerCity/order/toOrderDetail?orderNo="+orderNo+"&token="+$.cookie('token');
+        }else{
+            buttomUrl="/index";
+        }
+        
+        $(".add-contact.sui-border-b").on("click",function(){
+        	window.location.href=addurl;
+        })
+    	
+    	showContactLists();
+    	
+    	$('button').on('click', function() {
+    		window.location.href = buttomUrl;
+		});
+    });
+        
+    //删除操作
+    function deleteEventBind() {
+        $('#contacts .check').off('click').on('click', function() {
+            var _this = $(this);
+            var name = _this.data('name');
+            var phone = _this.data('phone');
+            $.confirm('<p class="text-default">姓名：' + name + '</p><p class="text-default">联系电话：' + phone + '</p>', '提示', ['删除', '确定'], null, function() {
+                $.showLoading('正在删除数据');
+                deteteById(_this.data('id'),_this);
+            });
+        });
+    }
+    
+    //删除通过id
+    function deteteById(id,obj)
+    {
+    	//api url
+		var urlStr = SERVER_URL_PREFIX+"/Contact/delContact";
+		//current page param
+		var dataObj = {
+				id: id,
+			};
+		//merge page param and common param,generate request param
+		dataObj = genReqData(urlStr, dataObj);
+    	
+    	$.post(urlStr, dataObj, function(result){
+    		$.hideLoading();
+            if(result && result.code == 0){
+            	obj.remove();
+            	$('.add-contact').show();
+            }else{
+            	$.alert((result&&result.message) || "未知错误");
+            }
+        }, 'json');
+    }
+    
+    //展示紧急联系人列表
+    function showContactLists(){
+    	//api url
+		var urlStr = SERVER_URL_PREFIX+"/Contact/contactsList";
+		//current page param
+		var dataObj = {
+			};
+		//merge page param and common param,generate request param
+		dataObj = genReqData(urlStr, dataObj);
+		
+        $.post(urlStr, dataObj, function(result){
+            if(result && result.code == 0){
+	            	$.each(result.data.list, function (index, contact) {
+	            		$('#contacts').append('<li data-phone="' + contact.contactNumber + '" data-name="' + contact.name + '" data-id="' + contact.id + '" class="check"><span>' + contact.name + '</span><span>' + contact.contactNumber + '</span></li>');
+	                });
+	            	deleteEventBind();
+            }else{
+            	$.alert((result&&result.message) || "未知错误");
+            }
+	    }, 'json');
+    }
+    </script>
+</body>
+</html>

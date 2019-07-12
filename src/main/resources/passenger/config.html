@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>系统设置</title>
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="email=no">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+   <link href="/res/style/simpleui.min.css?v=20170704" rel="stylesheet" type="text/css">
+    <link href="/res/style/common.css?v=20170704" rel="stylesheet" type="text/css">
+   <link href="/res/style/my/config.css?v=20170704" rel="stylesheet" type="text/css">
+	
+	<style>
+		.hidden{
+			display:none;
+		}
+	</style>
+<body>
+   
+   <ul class="sui-list sui-list-link">
+   		<li>
+            <div class="sui-cell-icons" id ="toPassengerInfoList">
+                <span class="sui-cell-icon icon-common"></span> 常用乘车人
+            </div>
+        </li>
+        <li data-href="/passenger/contacts.html">
+            <div class="sui-cell-icons">
+                <span class="sui-cell-icon icon-urgency"></span> 紧急联系人
+            </div>
+        </li>
+    </ul>
+    <ul class="sui-list sui-list-link">
+        <li data-href="/passenger/UserGuide2.html">
+            <div class="sui-cell-icons">
+                <span class="sui-cell-icon icon-use"></span> 使用说明
+            </div>
+        </li>
+    </ul>
+
+   <ul class="sui-list sui-list-link" style="display: none">
+       <li>
+           <div class="sui-cell-icons">
+               <a href="https://996.icu"><img src="https://img.shields.io/badge/link-996.icu-red.svg" alt="996.icu" /></a>
+           </div>
+       </li>
+   </ul>
+    
+    <footer>
+        <div class="btn-group">
+            <button class="primary">退出登录</button>
+        </div>
+    </footer>
+</body>
+
+	<script type="text/javascript" src="/js/commonJs.js?v=20170918"></script>
+	<script type="text/javascript" src="/js/commonFoot.js?v=20170704"></script>
+	<script>
+    $(function() {
+    	backtoUrl("/index");
+    	queryBusiness();
+    	
+        $('button').on('click', function() {
+            logout();
+        });
+        
+        $('#toPassengerInfoList').on('click',function(){
+        	toPassengerInfoList();
+        });
+    });
+    
+	//显示用户
+    function logout(){
+		
+    	//api url
+		var urlStr = SERVER_URL_PREFIX+"/Account/logout";
+		//current page param
+		var dataObj = {
+		};
+		//merge page param and common param,generate request param
+		dataObj = genReqData(urlStr, dataObj);
+    	
+        $.post(urlStr, dataObj, function(result){
+            if(result && result.code == 0){
+                localStorage.removeItem("userInfo");
+            	$.cookie("token", "", {expires: -1, path: '/' }); 
+            	if(loginType==1){
+					location.href = '/selectionLogin';
+				}else{
+					location.href = '/regOrLogin';
+				}
+            }else{
+            	$.alert((result&&result.message) || "未知错误");
+            }
+	    }, 'json');
+    }
+	
+	function queryBusiness(){
+		//api url
+		var urlStr = SERVER_URL_PREFIX+"/Account/queryBusiness";
+		//current page param
+		var dataObj = {
+		};
+		//merge page param and common param,generate request param
+		dataObj = genReqData(urlStr, dataObj);
+    	
+        $.post(urlStr, dataObj, function(result){
+            if(result && result.code == 0){
+            	if(result.data.hasTaxi == 1 || result.data.hasInterCity ==1){
+            		//$('.interCity').show();
+            	}else{
+            		//$('.bus').show();
+            		//$('.sui-mt20').eq(0).removeClass('sui-mt20');
+            		$('#bus').show();
+            	}
+            }else{
+            	$.alert((result&&result.message) || "未知错误");
+            }
+	    }, 'json');		
+	}
+	
+	function toPassengerInfoList(){
+		var urlStr = SERVER_URL_PREFIX+'/bus/passengerContactInfo/toList';
+		var dataObj = genReqData(urlStr, dataObj);
+		window.location.href="/bus/passengerContactInfo/toList?token="+dataObj.token+"&sign="+dataObj.sign;
+	}
+    </script>
+</html>

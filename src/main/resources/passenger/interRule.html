@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>约车规则</title>
+<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+<meta name="format-detection" content="telephone=no">
+<meta name="format-detection" content="email=no">
+<meta http-equiv="X-UA-Compatible" content="chrome=1" />
+
+<link href="/res/style/simpleui.min.css" rel="stylesheet" type="text/css">
+    <link href="/res/style/base/vectors.2.css?v=20171031" rel="stylesheet" type="text/css">
+    <link href="/res/style/coach/order-detail.css?v=20171031" rel="stylesheet" type="text/css">
+
+</head>
+
+<body>
+	<!-- 取票/退票规则 - 使用规则 -->
+    <div id="ticketRule" class="sui-popup-container">
+        <div class="sui-popup-mask"></div>
+        <div class="sui-popup-modal">
+            <div class="rule-content">
+                <h1></h1>
+                <div class="rule-bar">
+                    <div class="content">
+                        <P id="ruleContent">缺少文案</P>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="/js/commonJs.js?v=20171018"></script>
+<script type="text/javascript" src="/js/vectors.min.js?v=20170918"></script>
+<script type="text/javascript">
+
+	//api url
+	var urlStr = SERVER_URL_PREFIX + '/Page';
+	//current page param
+	var dataObj = {
+			type:3,
+		};
+	//merge page param and common param,generate request param
+	dataObj = genReqData(urlStr, dataObj);
+
+	$(function() {
+		$.ajax({
+			type : 'POST',
+			url : urlStr,
+			data : dataObj,
+			dataType : "json",
+			success : function(result) {
+				if(result && result.data){
+					$("#ruleContent").html(result.data);
+				}else{
+					$.alert((result&&result.message) || "未知错误");
+				}
+			},
+		});
+		
+		$.ruleInit();
+		//打开
+        $('#ticketRule').popup('modal', function () {
+            ruleScroll('#ticketRule');
+        });
+	})
+</script>
+</html>

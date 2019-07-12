@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>订单</title>
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="email=no">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+	<link href="/res/style/simpleui.min.css?v=20171114" rel="stylesheet" type="text/css">
+    <link href="/res/style/my/myorder.css?v=20171114" rel="stylesheet" type="text/css">
+    <link href="/res/style/base/vectors.2.css?version=20171114" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+	<div class="tab" id="tabList">
+	</div>
+	<div class="order-container" id="parentTemplate">
+		<div class="custom" id="order-list"></div>
+		<div class="empty-page order-empty" style="display:none">
+	           <i style="background-image: url(/res/images/common/icon_no_order.png);"></i>
+	           <p>您当前没有订单</p>
+	       <!-- <div class="btn-group">
+	               <button class="btn primary" onclick="toBusIndex()">去购票</button>
+	        </div> -->
+	   </div>
+	</div>
+    <script>
+        /*---此句代码解决页面滑动的问题---*/
+        window.PointerEvent = undefined;
+        /*------------------------------*/
+    </script>
+    <script type="text/javascript" src="/js/commonJs.js?v=20170704"></script>
+    <script type="text/javascript" src="/js/commonFoot.js?v=20170704"></script>
+    <script type="text/javascript" src="/js/commonjs/orderBar.js?v=20171110"></script>
+<script type="text/javascript">   
+
+    // 分页选项
+    var _options = {
+        number: 0,  // 页码
+        flag: false // 事件锁
+    };
+    
+    
+    function orderDetial(orderNo,orderType){
+   		var urlStr ='/busTicketOrder/OrderDetail';
+   		var dataObj = {	
+   		};
+   		dataObj = genReqData(urlStr, dataObj);
+   		window.location.href="/busTicketOrder/toOrderDetail?token="+dataObj.token+"&orderNo="+orderNo+"&sign="+dataObj.sign;
+   } 
+    
+            
+    $(function() {
+    	backtoUrl('/index');
+        
+    	//导航栏
+    	getBusinessTypes('busTicket');//引入js/commonjs/orderBar.js
+    	
+        //初始化
+        bindPageEvent();
+        requestServer();
+    });
+        
+ 	// 绑定分页事件
+    function bindPageEvent() {
+        $(document.body).rollPage('destroy');
+        /* $('#datalist').hideLoading(); */
+        $(document.body).rollPage('load', function() {
+        	// 页面滚动到底部请求下一页
+            requestServer();
+        });
+    }
+    // 模拟数据请求
+    var requestServer = function() {
+    	// 事件锁, 防止频繁触发事件
+        if(_options.flag) return;
+    	_options.flag = true;
+        // 显示分页指示器
+        /* $('#datalist').loading(); */
+
+      	//api url
+		var urlStr = "/busTicketOrder/getOrderList";
+		//current page param
+		var dataObj = {
+			page : _options.number+1,
+            pageSize :5,
+		};
+		//merge page param and common param,generate request param
+		dataObj = genReqData(urlStr, dataObj);
+			
+        $.post(urlStr, dataObj, function(result){
+        	/* $('#datalist').hideLoading(); */
+            _options.flag = false;   // 数据渲染完成，事件解锁
+            if (result.code == 0) {
+                var strHtml ='';
+                var totalCount = result.data.totalCount;
+                var list = result.data.data;
+                var pageSize = result.data.pageSize;
+                if (list.length <= 0) {
+					$(".empty-page").css('display', 'block');
+                	$(document.body).rollPage('destroy');   // 销毁事件
+                } else {
+                    for(var i = 0; i < list.length; i++) {
+                    	var item=list[i];
+                    	var statusHtml="";
+                    	var priceHtml="";
+                    	//判断订单状态
+                    	if(item.orderStatusInt==1){//订单状态:5-出票失败;4-已关闭;3-待支付;2-已出票;6-退票中;7-部分退票;8-全部退票;1-待出票
+                    		statusHtml="<span class='status status-primary' >"+item.orderStatus+"</span>";
+                    	}else if(item.orderStatusInt==2){
+                    		statusHtml="<span class='status status-green' >"+item.orderStatus+"</span>";
+                    	}else if(item.orderStatusInt==3){
+                    		statusHtml="<span class='status status-orange' >"+item.orderStatus+"</span>";
+                    	}else if(item.orderStatusInt==4){
+                    		statusHtml="<span class='status status-gray' >"+item.orderStatus+"</span>";
+                    	}else if(item.orderStatusInt==5){
+                    		statusHtml="<span class='status status-gray' >"+item.orderStatus+"</span>";
+                    	}else if(item.orderStatusInt==6){
+                    		statusHtml="<span class='status status-primary' >"+item.orderStatus+"</span>";
+                    	}else if(item.orderStatusInt==7){
+                    		statusHtml="<span class='status status-primary' >"+item.orderStatus+"</span>";
+                    	}else if(item.orderStatusInt==8){
+                    		statusHtml="<span class='status status-primary' >"+item.orderStatus+"</span>";
+                    	}else{//已完成
+                    		statusHtml="<span class='status status-green' >"+item.orderStatus+"</span>";
+                    	}
+                    
+                    	//是否显示金额 
+                    	if(item.orderStatusInt==2||item.orderStatusInt==1){
+                    		priceHtml='<div class="price"><i>&yen;</i>' + item.payPrice + '</div>';
+                    	}else{
+                    		priceHtml='<div class="price"></div>'
+                    	}
+
+						var totalStyle = '/'+item.numbers +'人';
+						
+						//   判断是否是流水班车
+						var flowingBus ;
+						if(item.hasRunningWater == 0){
+							flowingBus = item.boardingTime;
+						}else{
+							flowingBus = "流水班车(购票后可随时上车)";
+						}
+                      
+                     // 界面设置
+                      strHtml += '<div class="order-item" data-href="#' + i + '" onclick="orderDetial(\''+item.orderNo+'\''+ ',\'' + item.orderType + '\')">' +
+						'<div class="head">' +
+							'<span class="text-gray">下单时间：' + item.createTimeStr + '</span>' +
+							statusHtml +
+						'</div>' +
+						'<div class="content">' +
+							'<div class="time">' + flowingBus + totalStyle +'</div>' +
+							'<div class="row">' +
+								'<div class="address">' +
+									'<span class="start">' + item.departTitle + '</span>' +
+									'<span class="end">' + item.arriveTitle + '</span>' +
+								'</div>' + priceHtml +
+							'</div>' +
+						'</div>' +
+					'</div>';
+                    }
+                }
+                $('#order-list').append(strHtml);
+                _options.number++;
+            	_options.flag = false;
+                //最后一页销毁加载器
+                var pageCount = 1;
+                if(totalCount%pageSize == 0){
+                    pageCount = totalCount/pageSize
+                }else{
+                	pageCount = totalCount/pageSize + 1;
+                }                
+                if(_options.number < pageCount){
+                	if(list.length<5){
+                		$(document.body).rollPage('destroy');   // 销毁事件
+                	}
+                }else{
+                	$(document.body).rollPage('destroy');   // 销毁事件
+                }
+                
+            }
+        },'json');
+        
+    }
+    </script>
+
+
+
+</body>
+</html>
